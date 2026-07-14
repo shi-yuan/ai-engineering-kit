@@ -1,0 +1,42 @@
+# 合并到项目现有 openspec/config.yaml。
+# 不建议直接覆盖已有配置。
+
+context: |
+  当前项目可能是多 Git 仓库历史项目。
+
+  执行 change 分析、proposal、design、tasks 或 apply 前：
+  1. 读取项目聚合目录的 AGENTS.md 和 .agent-env.md。
+  2. 读取 project-context/system-overview.md。
+  3. 读取 project-context/architecture.md。
+  4. 读取 project-context/module-map.md。
+  5. 读取 project-context/data-model.md。
+  6. 读取 project-context/business/ 下相关业务流程和业务不变量。
+  7. 历史功能修改必须读取需求目录中的 20-change-analysis.md。
+  8. 当前实现事实必须通过实际代码验证。
+  9. 不得假设单个仓库包含完整实现。
+  10. 实现完成后检查 project-context 是否需要更新。
+
+rules:
+  proposal:
+    - 必须说明涉及模块和 Git 仓库。
+    - 必须说明数据库和数据影响。
+    - 必须说明接口或跨进程调用影响。
+    - 必须说明消息和异步行为影响。
+    - 必须说明定时、重试、补偿或对账影响。
+    - 必须说明事务、并发和幂等影响。
+    - 必须说明风险和兼容性。
+  design:
+    - 历史功能修改必须基于 20-change-analysis.md。
+    - 关键 Design 决策必须能追溯到 Requirement Delta 或当前实现证据。
+    - 不得发明项目中不存在的服务、表、消息、任务或架构层。
+    - 必须说明关键 Business Invariant 如何保持或被明确改变。
+  tasks:
+    - Task 必须明确修改目标和涉及模块。
+    - Task 不得要求实现 Agent 重新猜测关键业务语义。
+    - 跨仓修改必须明确对应仓库。
+    - 必须包含测试或 Verification Task。
+  apply:
+    - 严格依据已 Review 的 OpenSpec Artifact 实现。
+    - 不得进行与需求无关的重构。
+    - 代码事实与 Design 冲突时必须停止冲突部分并记录。
+    - 完成后检查 project-context 是否需要更新。
