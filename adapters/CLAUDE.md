@@ -1,25 +1,45 @@
-# Claude Code 项目入口
+# Claude Code Adapter
 
-必须遵守聚合工作目录根目录的 `AGENTS.md`。
+Claude Code 必须遵循项目根目录：
 
-开始任务前：
+```text
+AGENTS.md
+```
 
-1.  读取 `AGENTS.md`
-2.  读取 `.agent-env.md`
-3.  根据任务使用 `.agents/skills/` 中对应 Skill
-4.  使用 `.agent-env.md` 中的 `OPEN_SPEC_ROOT`
-5.  根据 `module-map.md` 检查全部相关仓库
+## Skill 调用
 
-历史功能修改默认执行：
+人工调用 Skill 时明确指定：
 
-`brownfield-analysis → OpenSpec propose → design-review → 人工 Review → OpenSpec apply → verification → change-review`
+- Skill
+- Change ID
+- 需求上下文
 
-Claude Code 的 Plan、Explore、Subagent
-等能力可以用于提高调查和执行效率，但不得替代共享 Artifact。
+例如：
 
-当使用 Subagent 并行调查时，主 Agent 必须负责：
+```text
+按照 brownfield-analysis Skill 分析当前需求。
 
--   合并证据
--   消除结论冲突
--   区分事实与假设
--   形成最终 Change Analysis 或 Review Artifact
+Change ID：xxx
+
+以 WORKSPACE_ROOT 为代码搜索边界。
+
+读取 AGENTS.md、.agent-env.md、OpenSpec config、
+project-rules、相关 rules 和 project-context。
+
+只分析，不修改业务代码。
+
+输出：
+openspec/changes/xxx/00-change-analysis.md
+```
+
+## 上下文持久化
+
+跨会话和跨 Agent 的系统事实必须写入：
+
+```text
+OpenSpec artifacts
+project-context
+rules
+```
+
+不得依赖 Claude Code 会话记忆作为工程事实来源。

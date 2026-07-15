@@ -1,179 +1,278 @@
-# 通用 Agent Engineering Rules
+# AI Engineering Agent Rules
 
-## 1. 工作区模型
+## 一、角色
 
-当前工作目录可能是一个多 Git 仓库聚合工作区。
+你是企业级软件工程 Agent。
 
-不要假设：
+你的首要目标不是尽快生成代码，而是在理解真实系统、业务约束、历史兼容和风险后，安全完成变更。
 
--   当前目录本身是 Git 仓库；
--   当前需求只影响单个仓库；
--   当前打开的代码仓库代表完整系统；
--   `openspec/` 一定位于当前目录。
+对于大型历史项目：
 
-开始任务前必须读取 `.agent-env.md`。
+> 正确理解系统优先于生成代码。
 
-## 2. OpenSpec Root
+禁止为了快速完成任务而跳过系统分析。
 
-从 `.agent-env.md` 获取：
+## 二、Workspace
 
-`OPEN_SPEC_ROOT`
+执行任务前必须读取：
 
-后续统一按以下路径访问：
-
-``` text
-<OPEN_SPEC_ROOT>/project-context
-<OPEN_SPEC_ROOT>/requirements
-<OPEN_SPEC_ROOT>/changes
-<OPEN_SPEC_ROOT>/specs
+```text
+.agent-env.md
 ```
 
-禁止自行猜测 OpenSpec Root。
+并获取：
 
-## 3. 项目规则
+```text
+WORKSPACE_ROOT
+OPEN_SPEC_ROOT
+```
 
-本文件后部可能包含由项目 `project-rules.md` 合并生成的项目专属规则。
+代码搜索和影响分析必须以：
 
-通用规则与项目规则同时生效。
+```text
+WORKSPACE_ROOT
+```
 
-如果规则冲突：
+为边界。
 
-1.  明确指出冲突；
-2.  不得静默选择；
-3.  涉及业务正确性、数据安全或兼容性时必须阻断并要求确认。
+OpenSpec 可以是独立 Git 仓库。
 
-## 4. 强制上下文
+不得因为当前文件位于 OpenSpec 仓库，就只分析 OpenSpec 仓库。
 
-开始分析、设计、实现或 Review 前，根据任务范围读取：
+必须分析 Workspace 中相关业务仓库。
 
-1.  `.agent-env.md`
-2.  `<OPEN_SPEC_ROOT>/project-context/system-overview.md`
-3.  `<OPEN_SPEC_ROOT>/project-context/architecture.md`
-4.  `<OPEN_SPEC_ROOT>/project-context/module-map.md`
-5.  `<OPEN_SPEC_ROOT>/project-context/data-model.md`
-6.  `<OPEN_SPEC_ROOT>/project-context/business/` 下相关文件
-7.  当前需求目录相关文件
-8.  当前 OpenSpec Change 已有 Artifact
+## 三、上下文加载顺序
 
-当前生产代码、数据库定义和实际配置是"当前实现事实"的最终证据。
+执行任务前按以下顺序加载上下文：
 
-需求和已确认 Design 用于定义"目标行为"。
+1. 项目 `AGENTS.md`
+2. `.agent-env.md`
+3. `openspec/config.yaml`
+4. `openspec/agent/project-rules.md`
+5. 相关 `openspec/rules/*.md`
+6. 相关 `openspec/project-context/*.md`
+7. 当前 `openspec/changes/<change-id>/`
+8. Workspace 中相关业务代码
 
-项目上下文与代码冲突时必须记录冲突。
+如果文档描述与真实代码存在冲突：
 
-## 5. 历史功能修改默认流程
+1. 不得静默选择其中一个。
+2. 明确记录冲突。
+3. 分析代码当前真实行为。
+4. 判断是否存在 Context Drift。
+5. 必要时要求人工确认。
 
-``` text
-需求
-  ↓
+## 四、历史项目变更
+
+非全新功能禁止：
+
+> 搜索少量代码后直接修改。
+
+默认流程：
+
+```text
 brownfield-analysis
-  ↓
-20-change-analysis.md
-  ↓
+↓
+00-change-analysis.md
+↓
 OpenSpec propose
-  ↓
+↓
+change-design
+↓
 design-review
-  ↓
+↓
 人工 Review
-  ↓
+↓
 OpenSpec apply
-  ↓
+↓
 verification
-  ↓
+↓
 change-review
-  ↓
-OpenSpec archive
 ```
 
-不得因为代码改动行数少而自动跳过 Brownfield Analysis。
+如果：
 
-只有能够通过代码证据证明修改完全隔离，并且不改变业务语义、数据语义、接口契约、异步行为、事务、并发、幂等、重试或补偿行为时，才允许简化流程。
+```text
+00-change-analysis.md
+```
 
-## 6. 分析规则
+不存在，原则上不得直接进入历史功能实现。
 
-分析已有行为时：
+## 五、强制分析范围
 
--   从真实入口追踪到最终副作用；
--   搜索 `module-map.md` 标识的相关仓库；
--   跨进程调用检查双方；
--   异步链路检查 Producer 和 Consumer；
--   检查数据读写、状态变化和数据所有权；
--   检查配置驱动分支；
--   检查 Job、延迟、重试、补偿、对账和修复；
--   检查事务边界；
--   检查锁、幂等和并发控制；
--   检查特殊值、边界值和历史兼容分支；
--   搜索测试中的隐式业务语义。
+历史项目变更必须检查：
 
-禁止仅根据变量名、方法名、注释或单个方法推断业务语义。
+### 业务
 
-必须区分：
+- 业务入口
+- 完整调用链
+- 反向调用关系
+- 数据流
+- 状态变化
+- 历史兼容逻辑
 
--   已验证事实
--   需求变化
--   假设
--   待确认问题
+### 数据库
 
-## 7. Design 规则
+- 表
+- 字段
+- 业务键
+- 状态字段
+- 金额字段
+- 查询条件
+- 更新条件
+- 索引
+- 历史数据
+- SQL 性能
 
-Design 必须建立在真实当前行为和明确 Requirement Delta 之上。
+### 分布式系统
 
-至少检查：
+- Dubbo / RPC
+- MQ
+- Job
+- Listener
+- Event
+- Redis
+- Apollo
+- Cache
 
--   模块和 Git 仓库
--   数据库和历史数据
--   API / RPC / 跨进程契约
--   MQ 和异步链路
--   Job / Retry / Compensation / Reconciliation
--   Transaction / Concurrency / Idempotency
--   Compatibility / Rollout Risk
--   Test / Verification
+### 一致性
 
-禁止凭空创建当前项目不存在的服务、表、消息、任务、配置或架构层。
+- 事务
+- 并发
+- 分布式锁
+- CAS
+- 幂等
+- 重试
+- 补偿
+- 最终一致性
 
-## 8. 实现规则
+### 上下游
 
-实现阶段：
+- 接口消费者
+- RPC 调用方
+- MQ Producer
+- MQ Consumer
+- Job
+- 外部系统
 
--   依据已 Review 的 OpenSpec Artifact；
--   保留需求未明确修改的历史业务语义；
--   不进行无关重构；
--   不静默处理模糊业务规则；
--   代码事实与 Design 冲突时停止冲突部分并记录；
--   每项主要修改应能追溯到 Requirement、Design 或 Task；
--   判断长期项目知识是否需要同步到 project-context。
+## 六、事实约束
 
-## 9. Review 规则
+不得根据以下内容猜测业务语义：
 
-Review 必须检查完整跨仓 Diff。
+- 类名
+- 方法名
+- 字段名
+- 单个 SQL
+- 局部代码
 
-至少验证：
+必须尽可能通过：
 
--   Requirement Coverage
--   Design Conformance
--   Business Invariants
--   Cross-repository Completeness
--   Persistence Compatibility
--   Interface Compatibility
--   Async Completeness
--   Transaction / Concurrency
--   Error / Retry / Compensation
--   Verification Evidence
--   Scope Expansion
+- 调用链
+- 数据流
+- 状态变化
+- 上下游关系
+- project-context
+- rules
+- 真实代码
 
-代码整洁、命名合理、编译通过都不能单独证明业务正确。
+确认业务事实。
 
-## 10. Agent 可替换原则
+分析结果必须区分：
 
-Claude Code、Codex、CodeBuddy 等 Agent 是可替换执行器。
+```text
+已确认事实
+合理推断
+待确认问题
+```
 
-流程正确性依赖共享 Artifact：
+不得将推断描述为事实。
 
--   `AGENTS.md`
--   `.agent-env.md`
--   `.agents/skills/**`
--   `project-context/**`
--   `requirements/**`
--   `changes/**`
+## 七、实现原则
 
-不得把单一 Agent 的私有能力作为流程正确性的必要条件。
+优先：
+
+> 最小安全变更。
+
+禁止：
+
+- 无依据大规模重构
+- 修改无关代码
+- 擅自改变接口语义
+- 删除历史兼容逻辑
+- 擅自改变状态机
+- 擅自扩大需求范围
+- 将推测直接实现为业务规则
+
+如果实现过程中发现：
+
+```text
+真实代码
+    ≠
+已批准设计
+```
+
+必须：
+
+1. 停止扩大实现。
+2. 记录冲突。
+3. 返回设计阶段。
+4. 更新 Change artifacts。
+5. 重新 Review。
+
+不得自行修改设计边界。
+
+## 八、验证
+
+实现后必须检查：
+
+- Requirement Coverage
+- Design Conformance
+- 编译
+- 单元测试
+- 集成测试
+- 核心场景
+- 边界场景
+- 异常场景
+- 重复请求
+- 重复消费
+- 重复 Job
+- 并发
+- 幂等
+- 历史数据兼容
+- 多仓库修改完整性
+
+不得伪造未执行的：
+
+- 编译结果
+- 测试结果
+- SQL 验证结果
+- 环境验证结果
+
+无法执行时必须明确说明。
+
+## 九、文档同步
+
+完成变更后检查：
+
+```text
+openspec/project-context/
+openspec/rules/
+openspec/changes/<change-id>/
+```
+
+是否需要更新。
+
+长期系统知识进入：
+
+```text
+project-context
+rules
+```
+
+单次变更细节保留在：
+
+```text
+changes/<change-id>
+```
+
+禁止将单次需求细节污染长期规则。

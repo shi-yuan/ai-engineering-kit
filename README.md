@@ -1,176 +1,59 @@
-# AI Engineering Kit V1.1
+# AI Engineering Kit V1.1.1
 
-面向长期生产使用的共享 Agent Engineering Kit。
+面向大型历史项目、多仓库、复杂业务系统的生产化 AI 辅助开发工程规范。
 
-适用场景：
+本 Kit 重点解决以下问题：
 
--   大型历史项目
--   多 Git 仓库
--   OpenSpec
--   Claude Code / Codex / CodeBuddy 等 Agent 混合使用
--   历史功能改造明显多于纯新功能开发
+- AI 修改历史复杂项目时只理解局部代码。
+- 跨仓库影响分析不完整。
+- AI 过早进入编码阶段。
+- OpenSpec Proposal 基于错误或不完整的系统理解。
+- Claude Code、CodeBuddy、Codex 等 Agent 切换时上下文丢失。
+- AI 生成代码返工量大。
+- 设计、实现和最终代码之间缺少一致性检查。
 
-## 一、核心设计
+## 一、核心思想
 
-V1.1 不再要求每个项目复制一整套 `agent/`。
+AI Engineering Kit 不依赖单一 Agent。
 
-统一维护一个独立 Git 仓库：
+支持：
 
-``` text
-ai-engineering-kit/
-├── AGENTS.base.md
-├── adapters/
-├── skills/
-└── scripts/
+- Claude Code
+- CodeBuddy
+- Codex
+- 其他支持读取 Markdown 指令的 Coding Agent
+
+核心原则：
+
+> Agent 可以切换，工程事实不能丢失。
+
+OpenSpec 是变更事实中心。
+
+长期系统知识存放于：
+
+```text
+openspec/project-context/
+openspec/rules/
 ```
 
-每个项目自己的 OpenSpec 仓库只维护项目差异：
+单次变更知识存放于：
 
-``` text
-xyy-order-openspec/
-├── agent/
-│   └── project-rules.md
-└── openspec/
-    ├── project-context/
-    ├── requirements/
-    ├── changes/
-    ├── specs/
-    └── config.yaml
+```text
+openspec/changes/<change-id>/
 ```
 
-最终由 `setup-agent` 生成聚合工作区：
+## 二、默认工作流
 
-``` text
-xyy-order/
-├── AGENTS.md
-├── CLAUDE.md
-├── CODEBUDDY.md
-├── .agent-env.md
-├── .agents/
-│   └── skills/
-├── xyy-order-openspec/
-├── xyy-order-core/
-└── xyy-order-business/
-```
-
-## 二、职责边界
-
-### ai-engineering-kit
-
-维护团队通用工程方法：
-
--   Brownfield Analysis
--   Design Review
--   Verification
--   Change Review
--   Agent Adapter
--   setup 脚本
-
-禁止写具体项目业务知识。
-
-### project-rules.md
-
-维护项目级 Agent 规则，例如：
-
--   Java 版本
--   技术栈
--   金额处理约束
--   RPC / MQ / SQL 特殊检查要求
--   项目特有工程限制
-
-### project-context
-
-维护长期项目知识：
-
--   系统概览
--   架构
--   模块和仓库关系
--   数据模型
--   业务流程
--   业务不变量
-
-### OpenSpec Change
-
-维护单次需求的 Proposal、Specs、Design、Tasks 等 Artifact。
-
-## 三、推荐目录
-
-``` text
-workspace/
-├── ai-engineering-kit/             # 独立 Git Repo
-│
-├── xyy-order/
-│   ├── xyy-order-openspec/         # Git Repo
-│   ├── xyy-order-core/             # Git Repo
-│   └── xyy-order-business/         # Git Repo
-│
-└── xyy-pop/
-    ├── xyy-pop-openspec/
-    ├── xyy-pop-core/
-    └── xyy-pop-business/
-```
-
-`ai-engineering-kit` 不要求位于项目目录内部。
-
-## 四、安装
-
-Windows：
-
-``` powershell
-cd ai-engineering-kit
-
-./scripts/setup-agent.ps1 `
-  -ProjectRoot ../xyy-order `
-  -OpenSpecRepo ../xyy-order/xyy-order-openspec
-```
-
-Linux/macOS：
-
-``` bash
-cd ai-engineering-kit
-
-bash ./scripts/setup-agent.sh \
-  ../xyy-order \
-  ../xyy-order/xyy-order-openspec
-```
-
-setup 会：
-
-1.  合并 `AGENTS.base.md` 与项目 `project-rules.md`
-2.  生成项目聚合目录 `AGENTS.md`
-3.  同步公共 Skills 到 `.agents/skills`
-4.  安装 Claude Code / CodeBuddy Adapter
-5.  生成 `.agent-env.md`
-6.  记录 Kit 版本和 OpenSpec Root
-
-## 五、升级
-
-更新共享 Kit：
-
-``` bash
-git pull
-```
-
-重新执行 setup 即可。
-
-项目自己的：
-
--   `project-rules.md`
--   `project-context`
--   OpenSpec Artifact
-
-不会被共享 Kit 覆盖。
-
-## 六、默认工作流
-
-``` text
+```text
 需求
   ↓
 brownfield-analysis
   ↓
-20-change-analysis.md
+00-change-analysis.md
   ↓
 OpenSpec propose
+  ↓
+change-design
   ↓
 design-review
   ↓
@@ -185,17 +68,142 @@ change-review
 OpenSpec archive
 ```
 
-## 七、版本原则
+V1.1.1 默认采用：
 
-共享 Kit 必须独立版本管理。
+> 人工调用 Skill，人工控制阶段切换。
 
-建议使用 Git Tag：
+暂不自动编排 Workflow。
 
-``` text
-v1.1.0
-v1.2.0
-v2.0.0
+当团队流程稳定后，可以升级为自动 Workflow。
+
+## 三、为什么先做 brownfield-analysis
+
+对于全新功能，AI 通常能够根据清晰需求完成设计和编码。
+
+但是历史复杂系统通常存在：
+
+- 隐式业务规则
+- 历史兼容逻辑
+- 多仓库调用
+- Dubbo RPC
+- MQ 异步链路
+- Job 补偿任务
+- Redis 状态
+- Apollo 配置
+- 事务边界
+- 分布式锁
+- CAS
+- 幂等
+- 重试
+- 补偿
+
+如果 AI 在理解这些内容之前直接进入设计或编码阶段，通常会产生大量返工。
+
+因此历史功能修改必须先执行：
+
+```text
+brownfield-analysis
 ```
 
-生产项目升级 Kit 后，应至少回放一个已知历史需求，确认 Skill
-行为没有明显退化。
+输出：
+
+```text
+00-change-analysis.md
+```
+
+然后再进入 OpenSpec propose。
+
+## 四、仓库结构
+
+```text
+ai-engineering-kit/
+├── VERSION
+├── README.md
+├── AGENTS.base.md
+│
+├── adapters/
+│   ├── CLAUDE.md
+│   ├── CODEBUDDY.md
+│   └── CODEX.md
+│
+├── workflows/
+│   ├── README.md
+│   └── default-change-flow.md
+│
+├── skills/
+│   ├── brownfield-analysis/
+│   │   ├── SKILL.md
+│   │   └── templates/
+│   │       └── 00-change-analysis-template.md
+│   │
+│   ├── design-review/
+│   │   └── SKILL.md
+│   │
+│   ├── verification/
+│   │   └── SKILL.md
+│   │
+│   └── change-review/
+│       └── SKILL.md
+│
+└── docs/
+    ├── project-onboarding.md
+    └── project-file-examples.md
+```
+
+## 五、项目接入
+
+推荐项目 Workspace：
+
+```text
+xyy-pop/
+├── AGENTS.md
+├── .agent-env.md
+├── openspec/
+├── xyy-pop-core/
+└── xyy-pop-business/
+```
+
+即使 `openspec` 是独立 Git 仓库，也必须从：
+
+```text
+xyy-pop/
+```
+
+打开 Agent Workspace。
+
+不得只打开：
+
+```text
+xyy-pop/openspec/
+```
+
+否则 Agent 无法完整分析业务代码。
+
+详细接入方式参见：
+
+```text
+docs/project-onboarding.md
+```
+
+## 六、版本策略
+
+当前版本：
+
+```text
+V1.1.1
+```
+
+V1.x：
+
+- 人工调用 Skill
+- 人工 Review
+- OpenSpec 作为事实中心
+
+未来版本可以增加：
+
+- Workflow State
+- Human Gate
+- 自动阶段切换
+- 自动 Requirement Coverage
+- 自动 Context Drift Detection
+- 自动多仓库 Diff 检查

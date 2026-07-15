@@ -1,19 +1,44 @@
-# CodeBuddy 项目入口
+# CodeBuddy Adapter
 
-必须遵守聚合工作目录根目录的 `AGENTS.md`。
+CodeBuddy 必须遵循项目根目录：
 
-开始任务前：
+```text
+AGENTS.md
+```
 
-1.  读取 `AGENTS.md`
-2.  读取 `.agent-env.md`
-3.  根据任务使用 `.agents/skills/` 中对应 Skill
-4.  使用 `.agent-env.md` 中的 `OPEN_SPEC_ROOT`
-5.  根据 `module-map.md` 搜索全部相关仓库
+## Skill 调用
 
-历史功能修改默认执行：
+人工调用 Skill 时：
 
-`brownfield-analysis → OpenSpec propose → design-review → 人工 Review → OpenSpec apply → verification → change-review`
+1. 指定对应 `SKILL.md`。
+2. 指定 Change ID。
+3. 指定需求上下文。
+4. 指定输出位置。
 
-CodeBuddy 的 Agent
-能力用于提高执行效率，但不得替代共享分析、Design、Verification 和 Review
-Artifact。
+历史功能变更优先执行：
+
+```text
+brownfield-analysis
+```
+
+## Workspace
+
+必须搜索整个：
+
+```text
+WORKSPACE_ROOT
+```
+
+不得因为 OpenSpec 是独立仓库，只分析 OpenSpec 仓库。
+
+## Agent 切换
+
+跨 Agent 切换时，以：
+
+```text
+OpenSpec artifacts
+```
+
+作为事实交接载体。
+
+不得依赖 CodeBuddy 私有上下文。

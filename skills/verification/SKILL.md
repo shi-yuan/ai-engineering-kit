@@ -1,108 +1,111 @@
-# Verification
+# verification
 
-## 目标
+## 一、目标
 
-在 OpenSpec apply 完成后执行确定性验证，并生成统一 Verification 证据。
+验证实际实现：
 
-Verification 不等于"让 AI 看一遍代码"。
+1. 是否覆盖需求。
+2. 是否符合已批准设计。
+3. 是否完成必要工程验证。
 
-优先执行可以机器验证的检查。
+## 二、输入
 
-## 输入
+读取：
 
--   `.agent-env.md`
--   当前 OpenSpec change
--   当前需求和 Change Analysis
--   所有受影响 Git 仓库
--   项目已有构建、测试和静态检查能力
+- 00-change-analysis.md
+- proposal
+- specs
+- design
+- tasks
+- 实际代码
+- 实际 Diff
 
-## 输出
+## 三、Requirement Coverage
 
-在当前 OpenSpec change 目录生成或更新：
+建立映射：
 
-`verification.md`
+```text
+Requirement
+↓
+Design
+↓
+Task
+↓
+Code
+↓
+Test / Verification
+```
 
-## 执行步骤
+检查：
 
-### 1. 确认受影响仓库
+- Requirement 是否有 Design
+- Design 是否有 Task
+- Task 是否有 Code
+- Code 是否有验证
 
-根据：
+## 四、Design Conformance
 
--   Change Analysis
--   Design
--   Tasks
--   实际 Git diff
+检查：
 
-列出所有受影响仓库。
+- 是否符合设计
+- 是否绕过安全约束
+- 是否增加未审批范围
+- 是否遗漏多仓库修改
+- 是否擅自修改接口语义
+- 是否删除历史兼容逻辑
 
-如果实际 diff 出现在 Design 未声明的仓库，记录异常。
+## 五、Build And Test
 
-### 2. 收集 Diff
+尽可能执行：
 
-对每个实现仓库检查：
+- 编译
+- 单元测试
+- 集成测试
+- 静态检查
 
--   `git status`
--   当前分支
--   `git diff`
--   `git diff --stat`
+不得伪造结果。
 
-不得只 Review 当前打开的文件。
+无法执行必须明确说明：
 
-### 3. 发现项目原生验证方式
+- 未执行项目
+- 原因
+- 风险
 
-优先读取项目已有：
+## 六、Scenario Verification
 
--   README
--   build 文件
--   CI 配置
--   Makefile / scripts
--   测试目录
--   静态检查配置
+检查：
 
-禁止在不了解项目构建方式时随意发明验证命令。
+- 正常场景
+- 边界场景
+- 异常场景
+- 重复请求
+- 重复消费
+- 重复 Job
+- 并发
+- 历史数据
 
-### 4. 执行确定性检查
+## 七、输出
 
-根据项目实际能力执行：
+输出：
 
--   编译
--   单元测试
--   集成测试
--   受影响模块测试
--   静态检查
--   格式检查
--   Schema / Mapper / 配置检查
--   自定义项目脚本
+```text
+openspec/changes/<change-id>/verification-report.md
+```
 
-对无法执行的检查明确记录原因。
+报告至少包含：
 
-### 5. 验证关键业务场景
+- Requirement Coverage
+- Design Conformance
+- Build Result
+- Test Result
+- Scenario Result
+- Known Risk
+- Unverified Items
 
-根据 specs、Change Analysis 中的不变量和 Design 风险，列出关键场景。
+最终结论：
 
-优先使用自动测试。
-
-没有自动测试时，记录：
-
--   场景
--   输入条件
--   期望结果
--   当前验证方式
--   是否仍需人工验证
-
-### 6. 输出 Verification Report
-
-使用 `templates/verification.md`。
-
-不得把"命令未执行"写成"验证通过"。
-
-## 结论
-
-只能使用：
-
--   `PASS`
--   `PASS WITH MANUAL CHECKS`
--   `FAIL`
--   `BLOCKED`
-
-存在编译失败、关键测试失败或关键不变量验证失败时，结论必须是 `FAIL`。
+```text
+PASS
+PASS_WITH_RISK
+FAIL
+```

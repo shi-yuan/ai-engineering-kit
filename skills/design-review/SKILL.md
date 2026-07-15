@@ -1,145 +1,167 @@
-# Design Review
+# design-review
 
-## 目标
+## 一、目标
 
-在实现开始前，使用需求、Change Analysis、project-context
-和真实代码证据审查 OpenSpec proposal、specs、design、tasks。
+在实现前审查 OpenSpec：
 
-目标是尽早发现：
+- Proposal
+- Specs
+- Design
+- Tasks
 
--   错误业务假设
--   影响范围遗漏
--   跨仓遗漏
--   Design 与当前实现不匹配
--   Task 无法完整落实 Design
+本 Skill：
 
-本 Skill 不修改生产代码。
+```text
+只审查
+不修改业务代码
+```
 
-## 输入
+## 二、输入
 
--   `.agent-env.md`
--   当前需求目录
--   `20-change-analysis.md`
--   当前 OpenSpec change 全部 Artifact
--   相关 project-context
--   必要的实现代码
+读取：
 
-## 输出
+- 00-change-analysis.md
+- proposal
+- specs
+- design
+- tasks
+- project-context
+- rules
+- 相关业务代码
 
-在当前 OpenSpec change 目录生成或更新：
+## 三、审查范围
 
-`design-review.md`
+### Requirement Coverage
 
-最终结论只能是：
+检查：
 
--   `PASS`
--   `PASS WITH REQUIRED FIXES`
--   `BLOCKED`
+```text
+Requirement
+↓
+Spec
+↓
+Design
+↓
+Task
+```
 
-## 执行步骤
+是否完整覆盖。
 
-### 1. 重建变更意图
+### Analysis Alignment
 
-重新读取原始需求和 `20-change-analysis.md`。
+检查 Design 是否与：
 
-明确：
+```text
+00-change-analysis.md
+```
 
--   当前行为
--   目标行为
--   需求 Delta
--   已验证业务不变量
--   影响仓库和系统边界
+中的真实系统现状一致。
 
-### 2. 联合审查 OpenSpec Artifact
+### Repository Coverage
 
-将 proposal、specs、design、tasks 作为一个整体检查。
+检查是否遗漏：
 
-检查 Artifact 之间是否互相一致。
+- API 仓库
+- Core 仓库
+- Business 仓库
+- Consumer
+- Job
+- MQ
+- 配置仓库
 
-重点检查：
+### Data Safety
 
--   proposal 是否准确描述问题和范围
--   specs 是否描述可验证行为
--   design 是否解释关键技术决策
--   tasks 是否足以完整落实 design
--   tasks 是否包含跨仓修改和 Verification
+检查：
 
-### 3. 证据交叉验证
+- 状态变化
+- 金额变化
+- SQL
+- 历史数据
+- 索引
+- 性能
 
-对每个关键 Design 决策：
+### Distributed Consistency
 
-1.  找到它依赖的当前系统事实。
-2.  在 `20-change-analysis.md` 中找到对应证据。
-3.  对高风险、模糊或证据不足的决策重新检查代码。
-4.  标记无证据支持的 Design 假设。
+检查：
 
-Change Analysis 不是绝对正确，Review 必须允许反向发现分析错误。
+- RPC
+- MQ
+- Job
+- 事务
+- 并发
+- 锁
+- CAS
+- 幂等
+- 重试
+- 补偿
 
-### 4. 反向影响分析
+### Compatibility
 
-从"拟修改点"反向检查谁会观察或依赖它。
+检查：
 
-至少考虑：
+- 老接口
+- 老消费者
+- 历史数据
+- 灰度
+- 新旧逻辑共存
+- 回滚
 
--   调用方和被调用方
--   数据读取方和写入方
--   消息生产方和消费方
--   Job、补偿、对账、修复流程
--   状态流转上下游
--   缓存和配置行为
--   事务和并发边界
--   历史数据与新数据兼容
+### Tasks Executability
 
-### 5. 业务不变量检查
+Tasks 必须：
 
-逐条检查 `20-change-analysis.md` 中的不变量：
+- 可执行
+- 可验证
+- 指向明确模块
+- 与 Design 对齐
 
--   Design 是否保持它
--   如果要改变，需求是否明确要求
--   specs 是否描述新行为
--   tasks 和 Verification 是否覆盖
+## 四、问题等级
 
-### 6. Task 可执行性检查
+### Blocker
 
-Task 必须能让实现 Agent 在不重新猜业务的情况下执行。
+可能导致：
 
-禁止出现只有结果、没有边界的 Task，例如：
+- 资金错误
+- 数据错误
+- 严重兼容问题
+- 设计不可实现
 
-`优化提现逻辑`
+### High
 
-更合适的 Task 应明确：
+高概率导致：
 
--   修改目标
--   涉及仓库 / 模块
--   需要保持的关键语义
--   需要验证的结果
+- 业务异常
+- 数据不一致
+- 大范围返工
 
-### 7. 输出 Review
+### Medium
 
-使用 `templates/design-review.md`。
+存在工程风险。
 
-完成前执行 `references/review-checklist.md`。
+### Low
 
-## 结论规则
+优化建议。
 
-### PASS
+## 五、输出格式
 
-没有阻断问题，也没有必须先修复的问题。
+每个问题必须包含：
 
-### PASS WITH REQUIRED FIXES
+- 等级
+- 问题
+- 证据
+- 影响
+- 建议
 
-Design 主方向正确，但存在明确必须修复的 Artifact 问题。
+最终结论：
 
-修复并复核前不得 apply。
+```text
+APPROVED
+APPROVED_WITH_COMMENTS
+REJECTED
+```
 
-### BLOCKED
+存在 Blocker：
 
-存在以下任一情况：
-
--   Design 建立在错误当前行为之上
--   关键业务规则仍未确认
--   重大跨仓或集成影响遗漏
--   方案与现有架构明显冲突且无充分理由
--   proposal/spec/design/tasks 之间重大矛盾
-
-不得用"实现时再看"掩盖 Design 阶段的关键不确定性。
+```text
+必须 REJECTED
+```
