@@ -147,6 +147,7 @@ ai-engineering-kit/
 │
 └── docs/
     ├── project-onboarding.md
+    ├── practice-guide.md
     └── project-file-examples.md
 ```
 
@@ -179,10 +180,11 @@ xyy-pop/openspec/
 
 否则 Agent 无法完整分析业务代码。
 
-详细接入方式参见：
+详细接入和日常实践参见：
 
 ```text
 docs/project-onboarding.md
+docs/practice-guide.md
 ```
 
 ## 六、版本策略

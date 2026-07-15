@@ -177,3 +177,9 @@ OpenSpec config 应声明：
 17. archive。
 
 V1.1.1 建议人工控制阶段切换。
+
+日常需求执行步骤、rules / project-context / project-rules 编写建议，参见：
+
+```text
+docs/practice-guide.md
+```
