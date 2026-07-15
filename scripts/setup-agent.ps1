@@ -47,6 +47,7 @@ $projectRulesContent
 Set-Content -Path (Join-Path $ProjectRoot "AGENTS.md") -Value $agentsContent -Encoding UTF8
 Copy-Item (Join-Path $KitRoot "adapters/CLAUDE.md") (Join-Path $ProjectRoot "CLAUDE.md") -Force
 Copy-Item (Join-Path $KitRoot "adapters/CODEBUDDY.md") (Join-Path $ProjectRoot "CODEBUDDY.md") -Force
+Copy-Item (Join-Path $KitRoot "adapters/CODEX.md") (Join-Path $ProjectRoot "CODEX.md") -Force
 
 $skillsTarget = Join-Path $ProjectRoot ".agents/skills"
 if (Test-Path $skillsTarget) {
@@ -59,6 +60,7 @@ $envContent = @"
 # Agent Environment
 
 AI_ENGINEERING_KIT_VERSION=$kitVersion
+WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=$relativeOpenSpec
 
 > 本文件由 ai-engineering-kit 生成。

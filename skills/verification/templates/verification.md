@@ -2,7 +2,7 @@
 
 ## 1. Verification 结论
 
-`PASS | PASS WITH MANUAL CHECKS | FAIL | BLOCKED`
+`PASS | PASS_WITH_MANUAL_CHECKS | FAIL | BLOCKED`
 
 ## 2. 受影响仓库与 Diff
 
@@ -38,4 +38,4 @@
 
   ID        检查内容   原因
   --------- ---------- ------
-  MAN-001              
+  MAN-001

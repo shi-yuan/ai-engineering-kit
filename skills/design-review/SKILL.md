@@ -155,13 +155,13 @@ Tasks 必须：
 最终结论：
 
 ```text
-APPROVED
-APPROVED_WITH_COMMENTS
-REJECTED
+PASS
+PASS_WITH_NON_BLOCKING_COMMENTS
+BLOCKED
 ```
 
 存在 Blocker：
 
 ```text
-必须 REJECTED
+必须 BLOCKED
 ```

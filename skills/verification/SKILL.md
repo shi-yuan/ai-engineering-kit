@@ -106,6 +106,7 @@ openspec/changes/<change-id>/verification-report.md
 
 ```text
 PASS
-PASS_WITH_RISK
+PASS_WITH_MANUAL_CHECKS
 FAIL
+BLOCKED
 ```

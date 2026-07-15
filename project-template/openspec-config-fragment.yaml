@@ -11,7 +11,7 @@ context: |
   4. 读取 project-context/module-map.md。
   5. 读取 project-context/data-model.md。
   6. 读取 project-context/business/ 下相关业务流程和业务不变量。
-  7. 历史功能修改必须读取需求目录中的 20-change-analysis.md。
+  7. 历史功能修改必须读取需求目录中的 00-change-analysis.md。
   8. 当前实现事实必须通过实际代码验证。
   9. 不得假设单个仓库包含完整实现。
   10. 实现完成后检查 project-context 是否需要更新。
@@ -26,7 +26,7 @@ rules:
     - 必须说明事务、并发和幂等影响。
     - 必须说明风险和兼容性。
   design:
-    - 历史功能修改必须基于 20-change-analysis.md。
+    - 历史功能修改必须基于 00-change-analysis.md。
     - 关键 Design 决策必须能追溯到 Requirement Delta 或当前实现证据。
     - 不得发明项目中不存在的服务、表、消息、任务或架构层。
     - 必须说明关键 Business Invariant 如何保持或被明确改变。

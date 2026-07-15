@@ -215,3 +215,16 @@ rules
 长期系统知识必须沉淀。
 
 单次需求细节保留在 Change。
+
+## 阶段门禁
+
+除非人工明确豁免，否则按以下结论推进：
+
+| 阶段 | 可进入下一阶段 | 必须停止 |
+|---|---|---|
+| brownfield-analysis | `00-change-analysis.md` 完成，且结论建议进入下一阶段 | 分析范围缺失、存在阻塞性待确认问题 |
+| design-review | `PASS` 或 `PASS_WITH_NON_BLOCKING_COMMENTS` | `BLOCKED` |
+| verification | `PASS` 或 `PASS_WITH_MANUAL_CHECKS` 且人工检查项已有 Owner | `FAIL` 或 `BLOCKED` |
+| change-review | `PASS` 或 `PASS_WITH_NON_BLOCKING_COMMENTS` | `BLOCKED` |
+
+`PASS_WITH_*` 只能包含非阻塞问题；凡是会影响需求正确性、数据安全、兼容性或上线回滚的问题，必须判定为 `BLOCKED` 或 `FAIL`。

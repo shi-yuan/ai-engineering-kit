@@ -1,6 +1,6 @@
 # Brownfield Analysis Checklist
 
-完成 `20-change-analysis.md` 前逐项检查：
+完成 `00-change-analysis.md` 前逐项检查：
 
 -   [ ] 已读取 `.agent-env.md` 并解析 `OPEN_SPEC_ROOT`
 -   [ ] 已读取 system overview、architecture、module map、data model

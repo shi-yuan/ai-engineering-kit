@@ -41,6 +41,7 @@ echo "OpenSpecRoot  : $REL_OPEN_SPEC"
 
 cp "$KIT_ROOT/adapters/CLAUDE.md" "$PROJECT_ROOT/CLAUDE.md"
 cp "$KIT_ROOT/adapters/CODEBUDDY.md" "$PROJECT_ROOT/CODEBUDDY.md"
+cp "$KIT_ROOT/adapters/CODEX.md" "$PROJECT_ROOT/CODEX.md"
 
 rm -rf "$PROJECT_ROOT/.agents/skills"
 mkdir -p "$PROJECT_ROOT/.agents/skills"
@@ -50,6 +51,7 @@ cat > "$PROJECT_ROOT/.agent-env.md" <<EOF
 # Agent Environment
 
 AI_ENGINEERING_KIT_VERSION=$KIT_VERSION
+WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=$REL_OPEN_SPEC
 
 > 本文件由 ai-engineering-kit 生成。

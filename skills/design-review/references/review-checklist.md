@@ -20,4 +20,4 @@
 -   [ ] tasks 足以完整落实 design
 -   [ ] tasks 不要求实现 Agent 重新猜关键业务语义
 -   [ ] Verification 策略覆盖主要风险
--   [ ] Review 结论符合 PASS / PASS WITH REQUIRED FIXES / BLOCKED 规则
+-   [ ] Review 结论符合 PASS / PASS_WITH_NON_BLOCKING_COMMENTS / BLOCKED 规则

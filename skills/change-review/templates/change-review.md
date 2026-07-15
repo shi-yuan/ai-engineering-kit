@@ -2,7 +2,7 @@
 
 ## 1. Review 结论
 
-`PASS | PASS WITH REQUIRED FIXES | BLOCKED`
+`PASS | PASS_WITH_NON_BLOCKING_COMMENTS | BLOCKED`
 
 ## 2. Diff 范围
 
@@ -54,4 +54,3 @@
 
   ID   事项   Owner
   ---- ------ -------
-              
