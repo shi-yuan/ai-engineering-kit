@@ -24,12 +24,14 @@ import os, sys
 print(os.path.relpath(sys.argv[2], sys.argv[1]).replace("\\", "/"))
 PY
 )"
+REL_SKILLS_ROOT="$REL_OPEN_SPEC/agent/skills"
 
 echo "KitRoot       : $KIT_ROOT"
 echo "KitVersion    : $KIT_VERSION"
 echo "ProjectRoot   : $PROJECT_ROOT"
 echo "OpenSpecRepo  : $OPENSPEC_REPO"
 echo "OpenSpecRoot  : $REL_OPEN_SPEC"
+echo "SkillsRoot    : $REL_SKILLS_ROOT"
 
 {
   cat "$KIT_ROOT/AGENTS.base.md"
@@ -43,16 +45,18 @@ cp "$KIT_ROOT/adapters/CLAUDE.md" "$PROJECT_ROOT/CLAUDE.md"
 cp "$KIT_ROOT/adapters/CODEBUDDY.md" "$PROJECT_ROOT/CODEBUDDY.md"
 cp "$KIT_ROOT/adapters/CODEX.md" "$PROJECT_ROOT/CODEX.md"
 
-rm -rf "$PROJECT_ROOT/.agents/skills"
-mkdir -p "$PROJECT_ROOT/.agents/skills"
-cp -R "$KIT_ROOT/skills/." "$PROJECT_ROOT/.agents/skills/"
+rm -rf "$OPEN_SPEC_ROOT/agent/skills"
+mkdir -p "$OPEN_SPEC_ROOT/agent/skills"
+cp -R "$KIT_ROOT/skills/." "$OPEN_SPEC_ROOT/agent/skills/"
 
 cat > "$PROJECT_ROOT/.agent-env.md" <<EOF
 # Agent Environment
 
 AI_ENGINEERING_KIT_VERSION=$KIT_VERSION
+AI_ENGINEERING_KIT_HOME=$KIT_ROOT
 WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=$REL_OPEN_SPEC
+AGENT_SKILLS_ROOT=$REL_SKILLS_ROOT
 
 > 本文件由 ai-engineering-kit 生成。
 > 不要手工修改；修改源配置后重新执行 setup-agent。

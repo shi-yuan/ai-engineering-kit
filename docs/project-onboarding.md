@@ -49,8 +49,10 @@ xyy-pop/openspec/
 
 ```text
 AI_ENGINEERING_KIT_VERSION=1.1.1
+AI_ENGINEERING_KIT_HOME=<ai-engineering-kit 仓库绝对路径>
 WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=./openspec
+AGENT_SKILLS_ROOT=./openspec/agent/skills
 ```
 
 如果 OpenSpec 实际目录名称为：
@@ -182,4 +184,5 @@ V1.1.1 建议人工控制阶段切换。
 
 ```text
 docs/practice-guide.md
+docs/kit-discovery.md
 ```

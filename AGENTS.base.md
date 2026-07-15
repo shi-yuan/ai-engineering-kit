@@ -23,8 +23,10 @@
 并获取：
 
 ```text
+AI_ENGINEERING_KIT_HOME
 WORKSPACE_ROOT
 OPEN_SPEC_ROOT
+AGENT_SKILLS_ROOT
 ```
 
 代码搜索和影响分析必须以：
@@ -34,6 +36,14 @@ WORKSPACE_ROOT
 ```
 
 为边界。
+
+Skill 解析优先级：
+
+1. 项目 OpenSpec 内 `AGENT_SKILLS_ROOT/manifest.yaml` 声明的 Skill。
+2. Kit 源目录 `AI_ENGINEERING_KIT_HOME/skills/manifest.yaml` 声明的公共 Skill。
+3. 当 manifest 缺失时，才回退到 `<skill-name>/SKILL.md` 目录约定。
+
+默认优先使用项目 OpenSpec 内复制的 Skill 清单，确保业务项目接入时的 Skill 版本可复现。
 
 OpenSpec 可以是独立 Git 仓库。
 

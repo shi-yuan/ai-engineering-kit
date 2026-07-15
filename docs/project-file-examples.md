@@ -41,8 +41,10 @@ brownfield-analysis
 
 ```text
 AI_ENGINEERING_KIT_VERSION=1.1.1
+AI_ENGINEERING_KIT_HOME=<ai-engineering-kit 仓库绝对路径>
 WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=./openspec
+AGENT_SKILLS_ROOT=./openspec/agent/skills
 ```
 
 ## 三、project-rules.md

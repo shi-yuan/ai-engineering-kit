@@ -1,0 +1,19 @@
+schema: ai-engineering-kit.skills.v1
+kit_version: 1.1.1
+skills:
+  - name: brownfield-analysis
+    entry: brownfield-analysis/SKILL.md
+    description: 历史系统修改前，还原真实系统现状和影响范围。
+    phase: analysis
+  - name: design-review
+    entry: design-review/SKILL.md
+    description: 实现前审查 OpenSpec Proposal、Specs、Design 和 Tasks。
+    phase: review
+  - name: verification
+    entry: verification/SKILL.md
+    description: 验证实际实现是否覆盖需求、符合设计并完成必要工程验证。
+    phase: verification
+  - name: change-review
+    entry: change-review/SKILL.md
+    description: 基于所有相关仓库实际 Diff 做最终工程审查。
+    phase: review

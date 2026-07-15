@@ -27,8 +27,6 @@ xyy-pop/
 ├── CLAUDE.md
 ├── CODEBUDDY.md
 ├── CODEX.md
-├── .agents/
-│   └── skills/
 ├── xyy-pop-core/
 ├── xyy-pop-business/
 ├── xyy-pop-api/
@@ -38,6 +36,8 @@ xyy-pop/
     │   └── project-rules.md
     └── openspec/
         ├── config.yaml
+        ├── agent/
+        │   └── skills/
         ├── rules/
         ├── project-context/
         └── changes/
@@ -58,6 +58,14 @@ xyy-pop-openspec/
 否则 Agent 的搜索边界无法覆盖全部业务仓库。
 
 ## 二、运行 setup-agent
+
+如果团队有多个业务项目，建议先阅读：
+
+```text
+docs/kit-discovery.md
+```
+
+并统一配置 `AI_ENGINEERING_KIT_HOME`，避免每个项目手工记忆 Kit 路径。
 
 在 `ai-engineering-kit` 仓库执行脚本。
 
@@ -96,15 +104,19 @@ AGENTS.md
 CLAUDE.md
 CODEBUDDY.md
 CODEX.md
-.agents/skills/
+openspec/agent/skills/
+├── manifest.yaml
+└── <skill-name>/SKILL.md
 ```
 
 其中 `.agent-env.md` 应包含：
 
 ```text
 AI_ENGINEERING_KIT_VERSION=1.1.1
+AI_ENGINEERING_KIT_HOME=<ai-engineering-kit 仓库绝对路径>
 WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=<相对路径>/openspec
+AGENT_SKILLS_ROOT=<相对路径>/openspec/agent/skills
 ```
 
 ## 三、做一个需求时如何执行

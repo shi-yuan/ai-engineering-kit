@@ -131,6 +131,7 @@ ai-engineering-kit/
 │   └── default-change-flow.md
 │
 ├── skills/
+│   ├── manifest.yaml
 │   ├── brownfield-analysis/
 │   │   ├── SKILL.md
 │   │   └── templates/
@@ -148,6 +149,7 @@ ai-engineering-kit/
 └── docs/
     ├── project-onboarding.md
     ├── practice-guide.md
+    ├── kit-discovery.md
     └── project-file-examples.md
 ```
 
@@ -185,6 +187,7 @@ xyy-pop/openspec/
 ```text
 docs/project-onboarding.md
 docs/practice-guide.md
+docs/kit-discovery.md
 ```
 
 ## 六、版本策略

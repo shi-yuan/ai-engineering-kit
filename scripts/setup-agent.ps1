@@ -20,6 +20,7 @@ if (-not (Test-Path $ProjectRules)) {
 }
 
 $relativeOpenSpec = [System.IO.Path]::GetRelativePath($ProjectRoot, $OpenSpecRoot).Replace("\", "/")
+$relativeSkillsRoot = "$relativeOpenSpec/agent/skills"
 $kitVersion = (Get-Content (Join-Path $KitRoot "VERSION") -Raw).Trim()
 
 Write-Host "KitRoot       : $KitRoot"
@@ -27,6 +28,7 @@ Write-Host "KitVersion    : $kitVersion"
 Write-Host "ProjectRoot   : $ProjectRoot"
 Write-Host "OpenSpecRepo  : $OpenSpecRepo"
 Write-Host "OpenSpecRoot  : $relativeOpenSpec"
+Write-Host "SkillsRoot    : $relativeSkillsRoot"
 
 $baseRules = Get-Content (Join-Path $KitRoot "AGENTS.base.md") -Raw
 $projectRulesContent = Get-Content $ProjectRules -Raw
@@ -49,7 +51,7 @@ Copy-Item (Join-Path $KitRoot "adapters/CLAUDE.md") (Join-Path $ProjectRoot "CLA
 Copy-Item (Join-Path $KitRoot "adapters/CODEBUDDY.md") (Join-Path $ProjectRoot "CODEBUDDY.md") -Force
 Copy-Item (Join-Path $KitRoot "adapters/CODEX.md") (Join-Path $ProjectRoot "CODEX.md") -Force
 
-$skillsTarget = Join-Path $ProjectRoot ".agents/skills"
+$skillsTarget = Join-Path $OpenSpecRoot "agent/skills"
 if (Test-Path $skillsTarget) {
     Remove-Item $skillsTarget -Recurse -Force
 }
@@ -60,8 +62,10 @@ $envContent = @"
 # Agent Environment
 
 AI_ENGINEERING_KIT_VERSION=$kitVersion
+AI_ENGINEERING_KIT_HOME=$KitRoot
 WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=$relativeOpenSpec
+AGENT_SKILLS_ROOT=$relativeSkillsRoot
 
 > 本文件由 ai-engineering-kit 生成。
 > 不要手工修改；修改源配置后重新执行 setup-agent。
