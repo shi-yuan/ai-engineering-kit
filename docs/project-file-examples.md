@@ -11,9 +11,7 @@ Workspace Root：
 
 当前目录。
 
-OpenSpec Root：
-
-openspec
+OpenSpec Root：OPEN_SPEC_ROOT
 
 本项目使用：
 
@@ -22,10 +20,10 @@ AI Engineering Kit V1.1.1
 执行任务前必须读取：
 
 1. `.agent-env.md`
-2. `openspec/config.yaml`
-3. `openspec/agent/project-rules.md`
-4. 相关 `openspec/rules/*.md`
-5. 相关 `openspec/project-context/*.md`
+2. `OPEN_SPEC_ROOT/config.yaml`
+3. `OPEN_SPEC_ROOT/agent/project-rules.md`
+4. 相关 `OPEN_SPEC_ROOT/rules/*.md`
+5. 相关 `OPEN_SPEC_ROOT/project-context/*.md`
 6. 当前 OpenSpec Change
 
 历史功能变更必须先执行：
@@ -93,8 +91,8 @@ withdraw-online-amount-refactor
 
 AGENTS.md
 .agent-env.md
-openspec/config.yaml
-openspec/agent/project-rules.md
+OPEN_SPEC_ROOT/config.yaml
+OPEN_SPEC_ROOT/agent/project-rules.md
 相关 rules
 相关 project-context
 

@@ -8,15 +8,20 @@
 xyy-pop/
 ├── AGENTS.md
 ├── .agent-env.md
-├── openspec/
-│   ├── config.yaml
-│   ├── agent/
-│   │   └── project-rules.md
-│   ├── rules/
-│   ├── project-context/
-│   └── changes/
+├── CLAUDE.md
+├── CODEBUDDY.md
+├── CODEX.md
 ├── xyy-pop-core/
-└── xyy-pop-business/
+├── xyy-pop-business/
+└── openspec/
+    ├── config.yaml
+    ├── agent/
+    │   ├── project-rules.md
+    │   └── skills/
+    │       └── manifest.yaml
+    ├── rules/
+    ├── project-context/
+    └── changes/
 ```
 
 OpenSpec 可以是独立 Git 仓库。
@@ -55,17 +60,7 @@ OPEN_SPEC_ROOT=./openspec
 AGENT_SKILLS_ROOT=./openspec/agent/skills
 ```
 
-如果 OpenSpec 实际目录名称为：
-
-```text
-xyy-pop-openspec
-```
-
-则配置：
-
-```text
-OPEN_SPEC_ROOT=./xyy-pop-openspec
-```
+如果 `openspec/` 是独立 Git 仓库，也建议将它放在聚合根目录下，保持 `OPEN_SPEC_ROOT=./openspec` 不变。
 
 ## 三、创建 AGENTS.md
 
@@ -115,14 +110,23 @@ Agent 统一入口和全局执行规则。
 例如：
 
 ```text
-rules/payment.md
-rules/bill.md
-rules/settlement.md
-rules/withdraw.md
-rules/database.md
-rules/money.md
-rules/dubbo.md
-rules/mq.md
+xyy-pop/
+├── AGENTS.md
+├── .agent-env.md
+├── CLAUDE.md
+├── CODEBUDDY.md
+├── CODEX.md
+├── xyy-pop-core/
+├── xyy-pop-business/
+└── openspec/
+    ├── config.yaml
+    ├── agent/
+    │   ├── project-rules.md
+    │   └── skills/
+    │       └── manifest.yaml
+    ├── rules/
+    ├── project-context/
+    └── changes/
 ```
 
 ### project-context/*.md
@@ -132,14 +136,23 @@ rules/mq.md
 例如：
 
 ```text
-system-overview.md
-architecture.md
-module-map.md
-data-model.md
-payment-flow.md
-bill-flow.md
-settle-flow.md
-withdraw-flow.md
+xyy-pop/
+├── AGENTS.md
+├── .agent-env.md
+├── CLAUDE.md
+├── CODEBUDDY.md
+├── CODEX.md
+├── xyy-pop-core/
+├── xyy-pop-business/
+└── openspec/
+    ├── config.yaml
+    ├── agent/
+    │   ├── project-rules.md
+    │   └── skills/
+    │       └── manifest.yaml
+    ├── rules/
+    ├── project-context/
+    └── changes/
 ```
 
 ### changes/<change-id>/
@@ -164,7 +177,7 @@ OpenSpec config 应声明：
 2. Agent 打开项目外层 Workspace。
 3. 基于 AGENTS.base.md 创建 AGENTS.md。
 4. 创建 .agent-env.md。
-5. 完善 project-rules.md。
+5. 完善 `OPEN_SPEC_ROOT/agent/project-rules.md`。
 6. 按需增加 rules。
 7. 检查 project-context。
 8. 选择一个中等复杂度历史需求试点。

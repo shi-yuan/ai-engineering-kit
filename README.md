@@ -161,9 +161,20 @@ ai-engineering-kit/
 xyy-pop/
 ├── AGENTS.md
 ├── .agent-env.md
-├── openspec/
+├── CLAUDE.md
+├── CODEBUDDY.md
+├── CODEX.md
 ├── xyy-pop-core/
-└── xyy-pop-business/
+├── xyy-pop-business/
+└── openspec/
+    ├── config.yaml
+    ├── agent/
+    │   ├── project-rules.md
+    │   └── skills/
+    │       └── manifest.yaml
+    ├── rules/
+    ├── project-context/
+    └── changes/
 ```
 
 即使 `openspec` 是独立 Git 仓库，也必须从：

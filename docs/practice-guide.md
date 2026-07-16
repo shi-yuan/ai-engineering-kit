@@ -29,18 +29,15 @@ xyy-pop/
 ├── CODEX.md
 ├── xyy-pop-core/
 ├── xyy-pop-business/
-├── xyy-pop-api/
-├── xyy-pop-job/
-└── xyy-pop-openspec/
+└── openspec/
+    ├── config.yaml
     ├── agent/
-    │   └── project-rules.md
-    └── openspec/
-        ├── config.yaml
-        ├── agent/
-        │   └── skills/
-        ├── rules/
-        ├── project-context/
-        └── changes/
+    │   ├── project-rules.md
+    │   └── skills/
+    │       └── manifest.yaml
+    ├── rules/
+    ├── project-context/
+    └── changes/
 ```
 
 即使 OpenSpec 是独立 Git 仓库，也必须从外层聚合目录打开 Agent Workspace：
@@ -52,7 +49,7 @@ xyy-pop/
 不要只打开：
 
 ```text
-xyy-pop-openspec/
+xyy-pop/openspec/
 ```
 
 否则 Agent 的搜索边界无法覆盖全部业务仓库。
@@ -76,7 +73,7 @@ cd E:\workspace\xiaoyy\sources\ai-engineering-kit
 
 .\scripts\setup-agent.ps1 `
   -ProjectRoot E:\workspace\xyy-pop `
-  -OpenSpecRepo E:\workspace\xyy-pop\xyy-pop-openspec
+  -OpenSpecRepo E:\workspace\xyy-pop\openspec
 ```
 
 Linux / macOS：
@@ -86,7 +83,7 @@ cd /path/to/ai-engineering-kit
 
 ./scripts/setup-agent.sh \
   /path/to/xyy-pop \
-  /path/to/xyy-pop/xyy-pop-openspec
+  /path/to/xyy-pop/openspec
 ```
 
 参数含义：
@@ -94,7 +91,7 @@ cd /path/to/ai-engineering-kit
 | 参数 | 含义 |
 |---|---|
 | `ProjectRoot` | 多仓聚合目录，Agent 应该从这里启动 |
-| `OpenSpecRepo` | OpenSpec 仓库根目录，里面应包含 `agent/project-rules.md` 和 `openspec/` |
+| `OpenSpecRepo` | OpenSpec 根目录，通常为 `<ProjectRoot>/openspec`；也兼容传入包含 `openspec/` 的父目录 |
 
 执行后会在 `ProjectRoot` 下生成或更新：
 
@@ -206,8 +203,8 @@ withdraw-online-amount-refactor
 提现时优先扣减在线支付可提现金额，不足部分使用商户余额补充。
 
 要求：
-1. 读取 AGENTS.md、.agent-env.md、openspec/config.yaml。
-2. 读取 openspec/agent/project-rules.md、相关 rules、相关 project-context。
+1. 读取 AGENTS.md、.agent-env.md、OPEN_SPEC_ROOT/config.yaml。
+2. 读取 OPEN_SPEC_ROOT/agent/project-rules.md、相关 rules、相关 project-context。
 3. 以 WORKSPACE_ROOT 为代码搜索边界，分析所有相关仓库。
 4. 只分析，不修改业务代码。
 5. 输出到：
@@ -713,7 +710,7 @@ openspec/project-context/
 | INV-WITHDRAW-001 | 提现 | 提现成功后金额不可再次扣减 | 防止重复扣款 | XxxService#confirm |
 | INV-BILL-001 | 账单 | 已结算账单不能修改金额 | 保证结算一致性 | BillStatus.SETTLED |
 
-## 六、openspec/agent/project-rules.md 应放什么
+## 六、OPEN_SPEC_ROOT/agent/project-rules.md 应放什么
 
 `project-rules.md` 放当前项目总体工程规则，是 Agent 进入项目后的项目级约束入口。
 
@@ -722,7 +719,7 @@ openspec/project-context/
 推荐结构：
 
 ```text
-openspec/agent/project-rules.md
+OPEN_SPEC_ROOT/agent/project-rules.md
 ```
 
 建议包含：
@@ -805,7 +802,7 @@ openspec/agent/project-rules.md
 如果首次接入不想一次写太多，至少准备：
 
 ```text
-openspec/agent/project-rules.md
+OPEN_SPEC_ROOT/agent/project-rules.md
 
 openspec/rules/
 ├── database.md
@@ -862,9 +859,23 @@ Change ID 会进入 `openspec/changes/<change-id>/`，也会出现在分析、�
 示例：
 
 ```text
-withdraw-online-amount-refactor
-payment-callback-idempotency-fix
-bill-settlement-status-compat
+xyy-pop/
+├── AGENTS.md
+├── .agent-env.md
+├── CLAUDE.md
+├── CODEBUDDY.md
+├── CODEX.md
+├── xyy-pop-core/
+├── xyy-pop-business/
+└── openspec/
+    ├── config.yaml
+    ├── agent/
+    │   ├── project-rules.md
+    │   └── skills/
+    │       └── manifest.yaml
+    ├── rules/
+    ├── project-context/
+    └── changes/
 ```
 
 不要使用：

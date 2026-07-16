@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory = $true)]
     [string]$ProjectRoot,
 
@@ -7,44 +7,73 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+function Get-RelativePathCompat([string]$BasePath, [string]$TargetPath) {
+    $baseFull = [System.IO.Path]::GetFullPath($BasePath)
+    $targetFull = [System.IO.Path]::GetFullPath($TargetPath)
+
+    if (-not $baseFull.EndsWith([System.IO.Path]::DirectorySeparatorChar)) {
+        $baseFull += [System.IO.Path]::DirectorySeparatorChar
+    }
+
+    $baseUri = New-Object System.Uri($baseFull)
+    $targetUri = New-Object System.Uri($targetFull)
+    $relativeUri = $baseUri.MakeRelativeUri($targetUri)
+    return [System.Uri]::UnescapeDataString($relativeUri.ToString()).Replace("\", "/")
+}
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $KitRoot = (Resolve-Path (Join-Path $ScriptDir "..")).Path
 $ProjectRoot = (Resolve-Path $ProjectRoot).Path
-$OpenSpecRepo = (Resolve-Path $OpenSpecRepo).Path
-$OpenSpecRoot = (Resolve-Path (Join-Path $OpenSpecRepo "openspec")).Path
-$ProjectRules = Join-Path $OpenSpecRepo "agent/project-rules.md"
+$OpenSpecInput = (Resolve-Path $OpenSpecRepo).Path
 
-if (-not (Test-Path $ProjectRules)) {
-    throw "未找到项目规则文件: $ProjectRules"
+if ((Test-Path (Join-Path $OpenSpecInput "config.yaml")) -and (Test-Path (Join-Path $OpenSpecInput "agent"))) {
+    $OpenSpecRoot = $OpenSpecInput
+    $OpenSpecRepoRoot = Split-Path -Parent $OpenSpecRoot
+} else {
+    $OpenSpecRepoRoot = $OpenSpecInput
+    $OpenSpecRoot = (Resolve-Path (Join-Path $OpenSpecRepoRoot "openspec")).Path
 }
 
-$relativeOpenSpec = [System.IO.Path]::GetRelativePath($ProjectRoot, $OpenSpecRoot).Replace("\", "/")
+$ProjectRules = Join-Path $OpenSpecRoot "agent/project-rules.md"
+$LegacyProjectRules = Join-Path $OpenSpecRepoRoot "agent/project-rules.md"
+
+if (-not (Test-Path $ProjectRules)) {
+    if (Test-Path $LegacyProjectRules) {
+        $ProjectRules = $LegacyProjectRules
+    } else {
+        throw "未找到项目规则文件。请创建 $ProjectRules"
+    }
+}
+
+$relativeOpenSpec = Get-RelativePathCompat $ProjectRoot $OpenSpecRoot
 $relativeSkillsRoot = "$relativeOpenSpec/agent/skills"
 $kitVersion = (Get-Content (Join-Path $KitRoot "VERSION") -Raw).Trim()
 
 Write-Host "KitRoot       : $KitRoot"
 Write-Host "KitVersion    : $kitVersion"
 Write-Host "ProjectRoot   : $ProjectRoot"
-Write-Host "OpenSpecRepo  : $OpenSpecRepo"
+Write-Host "OpenSpecInput : $OpenSpecInput"
 Write-Host "OpenSpecRoot  : $relativeOpenSpec"
+Write-Host "ProjectRules  : $ProjectRules"
 Write-Host "SkillsRoot    : $relativeSkillsRoot"
 
 $baseRules = Get-Content (Join-Path $KitRoot "AGENTS.base.md") -Raw
 $projectRulesContent = Get-Content $ProjectRules -Raw
+$newLine = [Environment]::NewLine
 
-$agentsContent = @"
-$baseRules
-
----
-
-# 项目专属规则
-
-> 以下内容由项目 OpenSpec 仓库的 `agent/project-rules.md` 合并生成。
-> 请勿直接修改聚合目录中的 AGENTS.md；应修改源文件后重新执行 setup-agent。
-
-$projectRulesContent
-"@
+$agentsContent = @(
+    $baseRules.TrimEnd(),
+    "",
+    "---",
+    "",
+    "# 项目专属规则",
+    "",
+    "> 以下内容由项目 OpenSpec 的 `agent/project-rules.md` 合并生成。",
+    "> 请勿直接修改聚合目录中的 AGENTS.md；应修改源文件后重新执行 setup-agent。",
+    "",
+    $projectRulesContent.TrimEnd(),
+    ""
+) -join $newLine
 
 Set-Content -Path (Join-Path $ProjectRoot "AGENTS.md") -Value $agentsContent -Encoding UTF8
 Copy-Item (Join-Path $KitRoot "adapters/CLAUDE.md") (Join-Path $ProjectRoot "CLAUDE.md") -Force
@@ -58,18 +87,19 @@ if (Test-Path $skillsTarget) {
 New-Item -ItemType Directory -Path $skillsTarget -Force | Out-Null
 Copy-Item (Join-Path $KitRoot "skills/*") $skillsTarget -Recurse -Force
 
-$envContent = @"
-# Agent Environment
-
-AI_ENGINEERING_KIT_VERSION=$kitVersion
-AI_ENGINEERING_KIT_HOME=$KitRoot
-WORKSPACE_ROOT=.
-OPEN_SPEC_ROOT=$relativeOpenSpec
-AGENT_SKILLS_ROOT=$relativeSkillsRoot
-
-> 本文件由 ai-engineering-kit 生成。
-> 不要手工修改；修改源配置后重新执行 setup-agent。
-"@
+$envContent = @(
+    "# Agent Environment",
+    "",
+    "AI_ENGINEERING_KIT_VERSION=$kitVersion",
+    "AI_ENGINEERING_KIT_HOME=$KitRoot",
+    "WORKSPACE_ROOT=.",
+    "OPEN_SPEC_ROOT=$relativeOpenSpec",
+    "AGENT_SKILLS_ROOT=$relativeSkillsRoot",
+    "",
+    "> 本文件由 ai-engineering-kit 生成。",
+    "> 不要手工修改；修改源配置后重新执行 setup-agent。",
+    ""
+) -join $newLine
 Set-Content -Path (Join-Path $ProjectRoot ".agent-env.md") -Value $envContent -Encoding UTF8
 
 Write-Host ""

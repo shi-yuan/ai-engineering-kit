@@ -57,11 +57,11 @@ OpenSpec 可以是独立 Git 仓库。
 
 1. 项目 `AGENTS.md`
 2. `.agent-env.md`
-3. `openspec/config.yaml`
-4. `openspec/agent/project-rules.md`
-5. 相关 `openspec/rules/*.md`
-6. 相关 `openspec/project-context/*.md`
-7. 当前 `openspec/changes/<change-id>/`
+3. `OPEN_SPEC_ROOT/config.yaml`
+4. `OPEN_SPEC_ROOT/agent/project-rules.md`
+5. 相关 `OPEN_SPEC_ROOT/rules/*.md`
+6. 相关 `OPEN_SPEC_ROOT/project-context/*.md`
+7. 当前 `OPEN_SPEC_ROOT/changes/<change-id>/`
 8. Workspace 中相关业务代码
 
 如果文档描述与真实代码存在冲突：
