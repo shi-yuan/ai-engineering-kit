@@ -99,7 +99,15 @@ skills:
     entry: project-domain-analysis/SKILL.md
     description: 当前项目特有的领域分析 Skill。
     phase: analysis
+    modifies_code: false
 ```
+
+`modifies_code` 表示该 Skill 是否允许修改业务代码：
+
+| 值 | 含义 |
+|---|---|
+| `false` | 只读分析、审查或验证，不应修改业务代码 |
+| `true` | 允许修改业务代码，必须配合明确的阶段门禁和人工授权 |
 
 如果项目清单中声明了与公共 Kit 同名的 Skill，项目清单优先。这适合项目级定制，但应谨慎使用，并在 `description` 中说明差异。
 
