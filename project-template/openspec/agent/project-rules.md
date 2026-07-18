@@ -5,6 +5,28 @@
 不要复制通用 Brownfield Analysis、Design Review 或 Change Review
 流程；这些由共享 `ai-engineering-kit` 维护。
 
+## 0. 通用治理入口
+
+当前项目接入 ai-engineering-kit 后，历史功能变更默认遵守：
+
+- `openspec/rules/change-gates.md`
+- `openspec/project-context/impact-analysis-guide.md`
+- `openspec/project-context/change-analysis-template.md`
+- `openspec/project-context/agent-handoff.md`
+- `openspec/project-context/integration/integration-registry-template.md`
+- `openspec/project-context/runtime-config-template.md`
+
+项目团队应逐步把模板替换为真实上下文：
+
+- 系统概览：`openspec/project-context/system-overview.md`
+- 架构说明：`openspec/project-context/architecture.md`
+- 模块地图：`openspec/project-context/module-map.md`
+- 数据模型：`openspec/project-context/data-model.md`
+- 业务不变量：`openspec/project-context/business/business-invariants.md`
+- RPC/MQ/Job/外部系统注册表：`openspec/project-context/integration/`
+
+如果上述文档与真实代码冲突，必须记录 Context Drift，并以真实代码分析当前行为。
+
 ## 1. 项目技术基线
 
 -   Backend：Spring Boot

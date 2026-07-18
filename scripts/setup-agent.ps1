@@ -21,6 +21,29 @@ function Get-RelativePathCompat([string]$BasePath, [string]$TargetPath) {
     return [System.Uri]::UnescapeDataString($relativeUri.ToString()).Replace("\", "/")
 }
 
+function Copy-TemplateIfMissing([string]$SourceRoot, [string]$TargetRoot) {
+    if (-not (Test-Path $SourceRoot)) {
+        return
+    }
+
+    Get-ChildItem -Path $SourceRoot -Recurse -File | ForEach-Object {
+        $relative = Get-RelativePathCompat $SourceRoot $_.FullName
+        $target = Join-Path $TargetRoot $relative
+        $targetDir = Split-Path -Parent $target
+
+        if (-not (Test-Path $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+        }
+
+        if (Test-Path $target) {
+            Write-Host "Skip existing template: $target"
+        } else {
+            Copy-Item $_.FullName $target
+            Write-Host "Seed template: $target"
+        }
+    }
+}
+
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $KitRoot = (Resolve-Path (Join-Path $ScriptDir "..")).Path
 $ProjectRoot = (Resolve-Path $ProjectRoot).Path
@@ -86,6 +109,9 @@ if (Test-Path $skillsTarget) {
 }
 New-Item -ItemType Directory -Path $skillsTarget -Force | Out-Null
 Copy-Item (Join-Path $KitRoot "skills/*") $skillsTarget -Recurse -Force
+
+$openSpecTemplate = Join-Path $KitRoot "project-template/openspec"
+Copy-TemplateIfMissing $openSpecTemplate $OpenSpecRoot
 
 $envContent = @(
     "# Agent Environment",

@@ -10,6 +10,14 @@
 
 不要只评价代码风格。
 
+本 Skill 对应：
+
+```text
+Gate 7 Change Review
+```
+
+Review 必须基于真实 Diff、代码、配置和验证结果，不得把实现 Agent 的自述当作唯一证据。
+
 ## 二、输入
 
 读取：
@@ -21,6 +29,8 @@
 - tasks
 - verification-report.md
 - 所有相关仓库实际 Diff
+- `openspec/rules/change-gates.md`
+- 相关 `openspec/project-context/*.md`
 
 ## 三、审查范围
 
@@ -43,6 +53,8 @@
 
 - 是否符合已批准设计
 - 是否存在 Design Drift
+- 是否实现了未经 Review 的推断
+- 是否需要回到设计阶段更新 artifacts
 
 ### Compatibility
 
@@ -67,6 +79,14 @@
 - compareTo
 - 舍入
 - 金额边界
+
+### Quantity / Permission
+
+- 数量单位
+- 库存或额度边界
+- 租户隔离
+- 权限范围
+- 组织或商户隔离
 
 ### Consistency
 
@@ -93,6 +113,14 @@
 - 测试遗漏
 - 文档同步
 
+### Context Sync
+
+- 是否有长期系统事实需要进入 `openspec/project-context/`。
+- 是否有可复用工程约束需要进入 `openspec/rules/`。
+- 是否需要更新 RPC/MQ/Job/外部系统/运行态配置注册表。
+- 是否存在 Context Drift。
+- 是否已留下必要 handoff。
+
 ## 四、问题等级
 
 ```text
@@ -109,6 +137,7 @@ Low
 - 触发场景
 - 影响
 - 建议
+- 是否阻塞 archive
 
 ## 五、最终结论
 

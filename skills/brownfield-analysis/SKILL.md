@@ -15,6 +15,12 @@
 
 > 在 OpenSpec propose 之前建立可靠的系统事实基础。
 
+本 Skill 对应：
+
+```text
+Gate 1 Brownfield Analysis
+```
+
 ## 二、适用场景
 
 适用于：
@@ -41,11 +47,14 @@
 2. `.agent-env.md`
 3. `openspec/config.yaml`
 4. `openspec/agent/project-rules.md`
-5. 相关 `openspec/rules/*.md`
-6. 相关 `openspec/project-context/*.md`
-7. 原始需求
-8. 当前 Change
-9. Workspace 业务代码
+5. `openspec/rules/change-gates.md`
+6. 相关 `openspec/rules/*.md`
+7. `openspec/project-context/impact-analysis-guide.md`
+8. `openspec/project-context/change-analysis-template.md`
+9. 相关 `openspec/project-context/*.md`
+10. 原始需求
+11. 当前 Change
+12. Workspace 业务代码
 
 ## 四、执行步骤
 
@@ -57,6 +66,7 @@
 - 核心规则
 - 边界条件
 - 非本次范围
+- 需求分类：A 全新独立功能 / B 历史功能增强 / C 高风险核心变更
 
 禁止直接根据需求描述推断现有系统实现。
 
@@ -176,6 +186,15 @@ Mapper / RPC / MQ
 
 不得将推断写成事实。
 
+### Step 9：给出 Gate 结论
+
+明确：
+
+- 是否建议进入 OpenSpec propose。
+- 哪些待确认问题会阻塞 Proposal。
+- 哪些待确认问题可作为非阻塞风险进入后续 Review。
+- 高风险核心变更是否需要人工关键事实确认、架构 Review 或业务 Review。
+
 ## 五、输出
 
 使用：
@@ -183,6 +202,14 @@ Mapper / RPC / MQ
 ```text
 templates/00-change-analysis-template.md
 ```
+
+如果项目中存在：
+
+```text
+openspec/project-context/change-analysis-template.md
+```
+
+优先使用项目模板。
 
 输出：
 
@@ -214,5 +241,8 @@ openspec/changes/<change-id>/00-change-analysis.md
 - 历史兼容
 - 风险
 - 待确认问题
+- Gate 结论
+- Proposal 建议范围
+- Verification 建议
 
 未完成以上分析，不建议进入 OpenSpec propose。

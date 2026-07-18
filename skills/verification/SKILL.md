@@ -8,6 +8,12 @@
 2. 是否符合已批准设计。
 3. 是否完成必要工程验证。
 
+本 Skill 对应：
+
+```text
+Gate 6 Verification
+```
+
 ## 二、输入
 
 读取：
@@ -19,6 +25,8 @@
 - tasks
 - 实际代码
 - 实际 Diff
+- `openspec/rules/change-gates.md`
+- `openspec/project-context/agent-handoff.md`
 
 ## 三、Requirement Coverage
 
@@ -42,6 +50,7 @@ Test / Verification
 - Design 是否有 Task
 - Task 是否有 Code
 - Code 是否有验证
+- 验证是否覆盖 `00-change-analysis.md` 中识别的风险
 
 ## 四、Design Conformance
 
@@ -53,6 +62,8 @@ Test / Verification
 - 是否遗漏多仓库修改
 - 是否擅自修改接口语义
 - 是否删除历史兼容逻辑
+- 是否实现了未经 Review 的推断或临时规则
+- 是否出现 Design Drift 或 Context Drift
 
 ## 五、Build And Test
 
@@ -62,6 +73,8 @@ Test / Verification
 - 单元测试
 - 集成测试
 - 静态检查
+- SQL/DDL 验证
+- RPC/MQ/Job 相关验证
 
 不得伪造结果。
 
@@ -83,8 +96,24 @@ Test / Verification
 - 重复 Job
 - 并发
 - 历史数据
+- 配置缺失
+- 外部系统异常
+- 补偿收敛
 
-## 七、输出
+## 七、Context Sync Check
+
+检查是否产生需要沉淀的长期知识：
+
+- 新业务不变量。
+- 新模块职责或调用链。
+- 新表、字段、状态、业务键。
+- 新 RPC/MQ/Job/外部系统事实。
+- 新运行态配置。
+- 新工程规则。
+
+本阶段只判断是否需要同步；实际同步可在 Gate 8 完成。
+
+## 八、输出
 
 输出：
 
@@ -101,6 +130,8 @@ openspec/changes/<change-id>/verification-report.md
 - Scenario Result
 - Known Risk
 - Unverified Items
+- Context Sync Items
+- Handoff Notes
 
 最终结论：
 

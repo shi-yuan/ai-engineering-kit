@@ -4,6 +4,15 @@
 
 `PASS | PASS_WITH_MANUAL_CHECKS | FAIL | BLOCKED`
 
+## 1.1 Gate 6 判定
+
+  检查项   结论   证据 / 说明
+  -------- ------ ------------
+  Requirement Coverage      
+  Design Conformance        
+  Risk Coverage             
+  Unverified Items Owner    
+
 ## 2. 受影响仓库与 Diff
 
   仓库   分支   Diff 范围   是否符合 Design
@@ -27,6 +36,11 @@
   场景   关联 Spec / Invariant   验证方式   结果
   ------ ----------------------- ---------- ------
                                             
+## 5.1 风险场景
+
+  风险   来源   验证方式   结果
+  ------ ------ ---------- ------
+                        
 
 ## 6. 失败项
 
@@ -39,3 +53,15 @@
   ID        检查内容   原因
   --------- ---------- ------
   MAN-001
+
+## 8. Context Sync 建议
+
+  类型   内容   建议落点   是否阻塞 Archive
+  ------ ------ ---------- ----------------
+                        
+
+## 9. Handoff Notes
+
+- 当前状态：
+- 未验证风险：
+- 下一步：

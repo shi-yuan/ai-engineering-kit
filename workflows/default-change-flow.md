@@ -1,6 +1,35 @@
 # 默认变更流程
 
-## Phase 1：brownfield-analysis
+## 需求分类
+
+| 类型 | 判断标准 | 推荐流程 |
+|---|---|---|
+| A 全新独立功能 | 与历史接口、历史状态、历史数据、异步链路基本无耦合 | 可简化 brownfield-analysis，但仍需 Proposal、Design、Tasks、Verification |
+| B 历史功能增强 | 修改既有接口、流程、表、状态、消息、任务、兼容逻辑 | 必须完整执行 Gate 0-8 |
+| C 高风险核心变更 | 涉及资金、库存、授信、合同、权限、计费、清结算、履约等 | 完整 Gate + 人工关键事实确认 + 架构/业务 Review + 上线风险清单 |
+
+## Gate 0：Context Loading
+
+执行任何阶段前必须读取：
+
+- `AGENTS.md`
+- `.agent-env.md`
+- `OPEN_SPEC_ROOT/config.yaml`
+- `OPEN_SPEC_ROOT/agent/project-rules.md`
+- 相关 `OPEN_SPEC_ROOT/rules/*.md`
+- 相关 `OPEN_SPEC_ROOT/project-context/*.md`
+- 当前 change artifacts
+- Workspace 中相关业务代码
+
+通过条件：
+
+```text
+确认 WORKSPACE_ROOT、OPEN_SPEC_ROOT、AGENT_SKILLS_ROOT
+确认搜索边界覆盖业务仓库
+确认相关长期上下文已读取
+```
+
+## Gate 1：brownfield-analysis
 
 人工调用：
 
@@ -37,7 +66,7 @@ openspec/changes/<change-id>/00-change-analysis.md
 - 分布式影响是否完整
 - 风险是否完整
 
-## Phase 2：OpenSpec propose
+## Gate 2：OpenSpec propose
 
 基于：
 
@@ -60,7 +89,7 @@ Proposal 至少覆盖：
 - 风险
 - 兼容性
 
-## Phase 3：change-design
+## Gate 3：change-design
 
 根据：
 
@@ -86,7 +115,7 @@ specs
 - 历史兼容
 - 回滚方案
 
-## Phase 4：design-review
+## Gate 4：tasks 与 design-review
 
 人工调用：
 
@@ -109,7 +138,9 @@ design-review
 禁止进入实现
 ```
 
-## Phase 5：人工 Review
+Tasks 必须覆盖 Design 的全部实现点和验证点，且不得要求实现 Agent 重新猜测业务语义。
+
+## 人工 Review
 
 人工确认：
 
@@ -121,7 +152,7 @@ design-review
 
 确认后进入实现。
 
-## Phase 6：OpenSpec apply
+## Gate 5：OpenSpec apply
 
 严格依据：
 
@@ -151,7 +182,7 @@ tasks
 返回 change-design
 ```
 
-## Phase 7：verification
+## Gate 6：verification
 
 人工调用：
 
@@ -174,7 +205,7 @@ verification-report.md
 - Scenario
 - Compatibility
 
-## Phase 8：change-review
+## Gate 7：change-review
 
 人工调用：
 
@@ -190,7 +221,7 @@ change-review
 - 超范围修改
 - 历史兼容
 - SQL
-- 金额
+- 金额/数量/权限
 - 事务
 - 并发
 - 锁
@@ -201,13 +232,16 @@ change-review
 - 日志
 - 测试
 
-## Phase 9：OpenSpec archive
+## Gate 8：context-sync
 
-归档前检查：
+人工调用或手工执行 Context Sync，检查：
 
 ```text
 project-context
 rules
+integration registry
+runtime config registry
+agent handoff
 ```
 
 是否需要同步。
@@ -215,6 +249,17 @@ rules
 长期系统知识必须沉淀。
 
 单次需求细节保留在 Change。
+
+如果发现长期事实只存在于 `openspec/changes/<change-id>/`，不得直接 archive；应先同步到 `openspec/project-context/` 或 `openspec/rules/`。
+
+## OpenSpec archive
+
+归档条件：
+
+- Gate 6 Verification 通过或人工接受剩余检查项。
+- Gate 7 Change Review 通过。
+- Gate 8 Context Sync 已完成。
+- 未关闭的阻塞项已解决或明确由人工接受。
 
 ## 阶段门禁
 
@@ -226,5 +271,6 @@ rules
 | design-review | `PASS` 或 `PASS_WITH_NON_BLOCKING_COMMENTS` | `BLOCKED` |
 | verification | `PASS` 或 `PASS_WITH_MANUAL_CHECKS` 且人工检查项已有 Owner | `FAIL` 或 `BLOCKED` |
 | change-review | `PASS` 或 `PASS_WITH_NON_BLOCKING_COMMENTS` | `BLOCKED` |
+| context-sync | 长期事实已同步或明确无需同步，handoff 已记录 | 存在 Context Drift 未处理、长期事实只留在 change |
 
 `PASS_WITH_*` 只能包含非阻塞问题；凡是会影响需求正确性、数据安全、兼容性或上线回滚的问题，必须判定为 `BLOCKED` 或 `FAIL`。

@@ -63,6 +63,33 @@ rm -rf "$OPEN_SPEC_ROOT/agent/skills"
 mkdir -p "$OPEN_SPEC_ROOT/agent/skills"
 cp -R "$KIT_ROOT/skills/." "$OPEN_SPEC_ROOT/agent/skills/"
 
+seed_templates_if_missing() {
+  local source_root="$1"
+  local target_root="$2"
+
+  if [ ! -d "$source_root" ]; then
+    return
+  fi
+
+  while IFS= read -r -d '' source_file; do
+    local rel_path="${source_file#$source_root/}"
+    local target_file="$target_root/$rel_path"
+    local target_dir
+    target_dir="$(dirname "$target_file")"
+
+    mkdir -p "$target_dir"
+
+    if [ -f "$target_file" ]; then
+      echo "Skip existing template: $target_file"
+    else
+      cp "$source_file" "$target_file"
+      echo "Seed template: $target_file"
+    fi
+  done < <(find "$source_root" -type f -print0)
+}
+
+seed_templates_if_missing "$KIT_ROOT/project-template/openspec" "$OPEN_SPEC_ROOT"
+
 cat > "$PROJECT_ROOT/.agent-env.md" <<EOF
 # Agent Environment
 

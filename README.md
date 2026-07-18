@@ -1,4 +1,4 @@
-# AI Engineering Kit V1.1.1
+# AI Engineering Kit V1.2.0
 
 面向大型历史项目、多仓库、复杂业务系统的生产化 AI 辅助开发工程规范。
 
@@ -47,28 +47,34 @@ openspec/changes/<change-id>/
 ```text
 需求
   ↓
-brownfield-analysis
+Gate 0 Context Loading
+  ↓
+Gate 1 brownfield-analysis
   ↓
 00-change-analysis.md
   ↓
-OpenSpec propose
+Gate 2 OpenSpec propose
   ↓
-change-design
+Gate 3 change-design
+  ↓
+Gate 4 tasks
   ↓
 design-review
   ↓
 人工 Review
   ↓
-OpenSpec apply
+Gate 5 OpenSpec apply
   ↓
-verification
+Gate 6 verification
   ↓
-change-review
+Gate 7 change-review
+  ↓
+Gate 8 context-sync
   ↓
 OpenSpec archive
 ```
 
-V1.1.1 默认采用：
+V1.2.0 默认采用：
 
 > 人工调用 Skill，人工控制阶段切换。
 
@@ -76,7 +82,19 @@ V1.1.1 默认采用：
 
 当团队流程稳定后，可以升级为自动 Workflow。
 
-## 三、为什么先做 brownfield-analysis
+## 三、需求分类
+
+不是所有需求都需要同等重量的流程。
+
+| 类型 | 判断标准 | 推荐流程 |
+|---|---|---|
+| A 全新独立功能 | 新模块、新入口、新表，与历史状态和上下游无强耦合 | 可轻量分析，但必须保留 Proposal、Design、Tasks、Verification |
+| B 历史功能增强 | 修改既有接口、状态、表、消息、任务、报表、兼容逻辑 | 必须执行完整 Gate |
+| C 高风险核心变更 | 涉及资金、库存、授信、合同、权限、计费、清结算、履约等 | 完整 Gate + 人工关键事实确认 + 架构/业务 Review + 上线风险清单 |
+
+本 Kit 的核心不是让 AI 自动接管历史项目，而是让 AI 在证据驱动的 Gate 治理下稳定参与需求交付。
+
+## 四、为什么先做 brownfield-analysis
 
 对于全新功能，AI 通常能够根据清晰需求完成设计和编码。
 
@@ -113,7 +131,7 @@ brownfield-analysis
 
 然后再进入 OpenSpec propose。
 
-## 四、仓库结构
+## 五、仓库结构
 
 ```text
 ai-engineering-kit/
@@ -147,13 +165,15 @@ ai-engineering-kit/
 │       └── SKILL.md
 │
 └── docs/
+    ├── gate-governance.md
+    ├── context-sync.md
     ├── project-onboarding.md
     ├── practice-guide.md
     ├── kit-discovery.md
     └── project-file-examples.md
 ```
 
-## 五、项目接入
+## 六、项目接入
 
 推荐项目 Workspace：
 
@@ -177,6 +197,19 @@ xyy-pop/
     └── changes/
 ```
 
+从 V1.2.0 开始，`setup-agent` 会在目标项目缺失对应文件时，自动种入通用模板：
+
+```text
+openspec/rules/change-gates.md
+openspec/project-context/change-analysis-template.md
+openspec/project-context/impact-analysis-guide.md
+openspec/project-context/agent-handoff.md
+openspec/project-context/integration/integration-registry-template.md
+openspec/project-context/runtime-config-template.md
+```
+
+已有项目文件不会被覆盖。项目团队应在这些模板基础上沉淀自己的业务上下文、集成注册表和长期规则。
+
 即使 `openspec` 是独立 Git 仓库，也必须从：
 
 ```text
@@ -199,14 +232,16 @@ xyy-pop/openspec/
 docs/project-onboarding.md
 docs/practice-guide.md
 docs/kit-discovery.md
+docs/gate-governance.md
+docs/context-sync.md
 ```
 
-## 六、版本策略
+## 七、版本策略
 
 当前版本：
 
 ```text
-V1.1.1
+V1.2.0
 ```
 
 V1.x：
@@ -214,6 +249,8 @@ V1.x：
 - 人工调用 Skill
 - 人工 Review
 - OpenSpec 作为事实中心
+- Gate 治理
+- Context Sync
 
 未来版本可以增加：
 

@@ -81,6 +81,8 @@ OpenSpec 可以是独立 Git 仓库。
 默认流程：
 
 ```text
+Gate 0 Context Loading
+↓
 brownfield-analysis
 ↓
 00-change-analysis.md
@@ -98,6 +100,8 @@ OpenSpec apply
 verification
 ↓
 change-review
+↓
+context-sync
 ```
 
 如果：
@@ -107,6 +111,12 @@ change-review
 ```
 
 不存在，原则上不得直接进入历史功能实现。
+
+需求分类：
+
+- A 全新独立功能：可以简化 brownfield-analysis，但仍需 Proposal、Design、Tasks、Verification。
+- B 历史功能增强：必须完整执行 Gate 0-8。
+- C 高风险核心变更：在完整 Gate 基础上增加人工关键事实确认、架构 Review、业务 Review 和上线风险清单。
 
 ## 五、强制分析范围
 
@@ -286,3 +296,10 @@ changes/<change-id>
 ```
 
 禁止将单次需求细节污染长期规则。
+
+归档前必须完成 Context Sync 判断：
+
+- 新确认的长期业务事实、模块职责、数据模型、RPC/MQ/Job、运行态配置进入 `project-context`。
+- 新形成的可复用工程约束进入 `rules`。
+- 未确认推断不得进入长期上下文。
+- 文档与真实代码冲突时记录 Context Drift，并以真实代码分析当前行为。

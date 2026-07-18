@@ -4,6 +4,16 @@
 
 `PASS | PASS_WITH_NON_BLOCKING_COMMENTS | BLOCKED`
 
+## 1.1 Gate 7 判定
+
+  检查项   结论   证据 / 说明
+  -------- ------ ------------
+  Diff 完整性      
+  Scope            
+  Design Conformance
+  Verification Alignment
+  Context Sync Readiness
+
 ## 2. Diff 范围
 
   仓库   主要变更   Design 是否声明   结论
@@ -39,6 +49,7 @@
   Configuration                          
   Cache                                  
   Transaction / Concurrency              
+  Quantity / Permission                  
 
 ## 7. Verification 复核
 
@@ -54,3 +65,9 @@
 
   ID   事项   Owner
   ---- ------ -------
+
+## 10. Context Sync / Archive 阻塞项
+
+  ID        内容   建议落点   是否阻塞 Archive
+  -------- ------ ---------- ----------------
+  CTX-001
