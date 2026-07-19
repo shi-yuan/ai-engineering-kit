@@ -1,4 +1,4 @@
-# change-review
+﻿# change-review
 
 ## 一、目标
 
@@ -29,6 +29,7 @@ Review 必须基于真实 Diff、代码、配置和验证结果，不得把实�
 - tasks
 - verification-report.md
 - 所有相关仓库实际 Diff
+- `openspec/changes/<change-id>/diff-summary.md`（优先由 `scripts/change-diff-summary.ps1` 生成）
 - `openspec/rules/change-gates.md`
 - 相关 `openspec/project-context/*.md`
 
@@ -38,10 +39,20 @@ Review 必须基于真实 Diff、代码、配置和验证结果，不得把实�
 
 ### Diff 完整性
 
+执行或读取：
+
+```powershell
+scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root>
+```
+
+检查：
+
 - 是否遗漏仓库
 - 是否遗漏模块
 - 是否遗漏调用方
 - 是否遗漏 Consumer / Job
+- 是否存在 design/tasks 未声明但 diff 出现的文件
+- 是否存在 design/tasks 声明但 diff 未修改的文件
 
 ### Scope
 

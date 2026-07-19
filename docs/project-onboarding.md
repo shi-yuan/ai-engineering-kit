@@ -1,4 +1,4 @@
-# 项目接入指南
+﻿# 项目接入指南
 
 ## 一、推荐目录
 
@@ -53,7 +53,7 @@ xyy-pop/openspec/
 内容：
 
 ```text
-AI_ENGINEERING_KIT_VERSION=1.1.1
+AI_ENGINEERING_KIT_VERSION=1.2.0
 AI_ENGINEERING_KIT_HOME=<ai-engineering-kit 仓库绝对路径>
 WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=./openspec
@@ -189,13 +189,52 @@ OpenSpec config 应声明：
 14. OpenSpec apply。
 15. verification。
 16. change-review。
-17. archive。
+17. context-sync。
+18. archive。
 
-V1.1.1 建议人工控制阶段切换。
+V1.2.0 建议人工控制阶段切换，并用 Gate 判断是否允许进入下一阶段。
+
+执行 `setup-agent` 后，缺失时会自动种入以下通用模板，已有项目文件不会被覆盖：
+
+```text
+openspec/rules/change-gates.md
+openspec/rules/database.md
+openspec/rules/money.md
+openspec/rules/api-compatibility.md
+openspec/rules/dubbo.md
+openspec/rules/mq.md
+openspec/rules/job.md
+openspec/rules/redis-cache.md
+openspec/rules/transaction-consistency.md
+openspec/rules/logging-observability.md
+openspec/rules/testing.md
+openspec/rules/security-permission.md
+openspec/project-context/change-analysis-template.md
+openspec/project-context/impact-analysis-guide.md
+openspec/project-context/agent-handoff.md
+openspec/project-context/integration/integration-registry-template.md
+openspec/project-context/runtime-config-template.md
+```
 
 日常需求执行步骤、rules / project-context / project-rules 编写建议，参见：
 
 ```text
 docs/practice-guide.md
 docs/kit-discovery.md
+```
+
+## 生产化加固
+
+完成首次接入后，建议执行：
+
+```powershell
+scripts/lint-kit.ps1
+scripts/check-change.ps1 -ChangeId <change-id> -NextGate apply
+scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root>
+```
+
+生产化加固、上下文健康治理、Agent Profile 和度量体系参考：
+
+```text
+docs/production-hardening.md
 ```

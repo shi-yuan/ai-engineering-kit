@@ -81,6 +81,22 @@ function Try-ResolveSkill([string]$Root, [string]$Skill) {
 
 $ProjectRoot = (Resolve-Path $ProjectRoot).Path
 
+$customSkillsRoot = Get-AgentEnvValue $ProjectRoot "AGENT_CUSTOM_SKILLS_ROOT"
+if (-not $customSkillsRoot) {
+    $openSpecRootForCustom = Get-AgentEnvValue $ProjectRoot "OPEN_SPEC_ROOT"
+    if ($openSpecRootForCustom) {
+        $customSkillsRoot = Join-Path $openSpecRootForCustom "agent/custom-skills"
+    }
+}
+if ($customSkillsRoot) {
+    $customSkillsRoot = Resolve-ProjectPath $ProjectRoot $customSkillsRoot
+    $resolved = Try-ResolveSkill $customSkillsRoot $Skill
+    if ($resolved) {
+        Write-Output $resolved
+        exit 0
+    }
+}
+
 $skillsRoot = Get-AgentEnvValue $ProjectRoot "AGENT_SKILLS_ROOT"
 if (-not $skillsRoot) {
     $openSpecRoot = Get-AgentEnvValue $ProjectRoot "OPEN_SPEC_ROOT"
@@ -126,4 +142,4 @@ if ($resolved) {
     exit 0
 }
 
-throw "Cannot resolve skill '$Skill'. Checked project skills manifest, legacy .agents/skills, and AI_ENGINEERING_KIT_HOME skills manifest."
+throw "Cannot resolve skill '$Skill'. Checked project custom skills, project public skills manifest, legacy .agents/skills, and AI_ENGINEERING_KIT_HOME skills manifest."

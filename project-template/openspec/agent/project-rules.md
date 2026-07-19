@@ -1,4 +1,4 @@
-# Project Agent Rules
+﻿# Project Agent Rules
 
 本文件只维护当前项目特有的 Agent 工程规则。
 
@@ -10,11 +10,18 @@
 当前项目接入 ai-engineering-kit 后，历史功能变更默认遵守：
 
 - `openspec/rules/change-gates.md`
+- `openspec/rules/context-health.md`
 - `openspec/project-context/impact-analysis-guide.md`
 - `openspec/project-context/change-analysis-template.md`
 - `openspec/project-context/agent-handoff.md`
-- `openspec/project-context/integration/integration-registry-template.md`
-- `openspec/project-context/runtime-config-template.md`
+- `openspec/project-context/module-map.md`
+- `openspec/project-context/data-state-registry.md`
+- `openspec/project-context/business/business-invariants.md`
+- `openspec/project-context/integration/rpc-registry.md`
+- `openspec/project-context/integration/mq-registry.md`
+- `openspec/project-context/integration/job-registry.md`
+- `openspec/project-context/integration/runtime-config-registry.md`
+- `openspec/project-context/metrics/ai-engineering-metrics.md`
 
 项目团队应逐步把模板替换为真实上下文：
 
@@ -23,7 +30,9 @@
 - 模块地图：`openspec/project-context/module-map.md`
 - 数据模型：`openspec/project-context/data-model.md`
 - 业务不变量：`openspec/project-context/business/business-invariants.md`
-- RPC/MQ/Job/外部系统注册表：`openspec/project-context/integration/`
+- RPC/MQ/Job/运行态配置注册表：`openspec/project-context/integration/`
+- Agent 角色 Profile：`openspec/agent/profiles/`
+- 项目自定义 Skill：`openspec/agent/custom-skills/`
 
 如果上述文档与真实代码冲突，必须记录 Context Drift，并以真实代码分析当前行为。
 

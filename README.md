@@ -1,4 +1,4 @@
-# AI Engineering Kit V1.2.0
+﻿# AI Engineering Kit V1.2.0
 
 面向大型历史项目、多仓库、复杂业务系统的生产化 AI 辅助开发工程规范。
 
@@ -161,7 +161,10 @@ ai-engineering-kit/
 │   ├── verification/
 │   │   └── SKILL.md
 │   │
-│   └── change-review/
+│   ├── change-review/
+│   │   └── SKILL.md
+│
+│   └── context-sync/
 │       └── SKILL.md
 │
 └── docs/
@@ -201,6 +204,17 @@ xyy-pop/
 
 ```text
 openspec/rules/change-gates.md
+openspec/rules/database.md
+openspec/rules/money.md
+openspec/rules/api-compatibility.md
+openspec/rules/dubbo.md
+openspec/rules/mq.md
+openspec/rules/job.md
+openspec/rules/redis-cache.md
+openspec/rules/transaction-consistency.md
+openspec/rules/logging-observability.md
+openspec/rules/testing.md
+openspec/rules/security-permission.md
 openspec/project-context/change-analysis-template.md
 openspec/project-context/impact-analysis-guide.md
 openspec/project-context/agent-handoff.md
@@ -260,3 +274,19 @@ V1.x：
 - 自动 Requirement Coverage
 - 自动 Context Drift Detection
 - 自动多仓库 Diff 检查
+
+## 八、生产化校验脚本
+
+V1.2.0 增加以下基础校验脚本：
+
+```powershell
+scripts/lint-kit.ps1
+scripts/check-change.ps1 -ChangeId <change-id> -NextGate apply
+scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root>
+```
+
+- `lint-kit.ps1`：校验 Kit 版本一致性、manifest entry、必需模板和遗留版本号。
+- `check-change.ps1`：检查单个 change 是否满足进入下一 Gate 的最低 artifact 条件。
+- `change-diff-summary.ps1`：生成多仓 Diff Summary，对照 design/tasks 识别潜在超范围修改和遗漏声明。
+
+项目自定义 Skill 放入 `openspec/agent/custom-skills/`，`setup-agent` 不会覆盖；公共 Skill 刷新前会备份到 `openspec/agent/skills.backup/`。

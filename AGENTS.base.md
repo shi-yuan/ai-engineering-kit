@@ -1,4 +1,4 @@
-# AI Engineering Agent Rules
+﻿# AI Engineering Agent Rules
 
 ## 一、角色
 
@@ -39,11 +39,12 @@ WORKSPACE_ROOT
 
 Skill 解析优先级：
 
-1. 项目 OpenSpec 内 `AGENT_SKILLS_ROOT/manifest.yaml` 声明的 Skill。
-2. Kit 源目录 `AI_ENGINEERING_KIT_HOME/skills/manifest.yaml` 声明的公共 Skill。
-3. 当 manifest 缺失时，才回退到 `<skill-name>/SKILL.md` 目录约定。
+1. 项目 OpenSpec 内 `AGENT_CUSTOM_SKILLS_ROOT/manifest.yaml` 声明的项目自定义 Skill。
+2. 项目 OpenSpec 内 `AGENT_SKILLS_ROOT/manifest.yaml` 声明的公共 Skill 快照。
+3. Kit 源目录 `AI_ENGINEERING_KIT_HOME/skills/manifest.yaml` 声明的公共 Skill。
+4. 当 manifest 缺失时，才回退到 `<skill-name>/SKILL.md` 目录约定。
 
-默认优先使用项目 OpenSpec 内复制的 Skill 清单，确保业务项目接入时的 Skill 版本可复现。
+默认优先使用项目自定义 Skill，再使用项目 OpenSpec 内复制的公共 Skill 清单，确保业务项目接入时的 Skill 版本可复现且项目定制不会被 `setup-agent` 覆盖。
 
 OpenSpec 可以是独立 Git 仓库。
 
@@ -59,10 +60,19 @@ OpenSpec 可以是独立 Git 仓库。
 2. `.agent-env.md`
 3. `OPEN_SPEC_ROOT/config.yaml`
 4. `OPEN_SPEC_ROOT/agent/project-rules.md`
-5. 相关 `OPEN_SPEC_ROOT/rules/*.md`
-6. 相关 `OPEN_SPEC_ROOT/project-context/*.md`
-7. 当前 `OPEN_SPEC_ROOT/changes/<change-id>/`
-8. Workspace 中相关业务代码
+5. `OPEN_SPEC_ROOT/rules/change-gates.md`
+6. `OPEN_SPEC_ROOT/rules/context-health.md`
+7. 与本次变更相关的 `OPEN_SPEC_ROOT/rules/*.md`
+8. 与本次变更相关的 `OPEN_SPEC_ROOT/project-context/*.md`
+9. 当前 `OPEN_SPEC_ROOT/changes/<change-id>/`
+10. Workspace 中相关业务代码
+
+上下文健康要求：
+
+- 默认只加载与本次需求、变更文件、接口、表、Topic、Job 或模块相关的长期上下文。
+- 不得把全部 `project-context` 无差别复制进 prompt。
+- Path-specific 规则优先由 `module-map.md`、业务不变量和集成 registry 指向。
+- 规则冲突时必须记录冲突来源、适用范围和人工确认需求。
 
 如果文档描述与真实代码存在冲突：
 

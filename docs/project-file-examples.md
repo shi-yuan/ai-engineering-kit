@@ -15,7 +15,7 @@ OpenSpec Root：OPEN_SPEC_ROOT
 
 本项目使用：
 
-AI Engineering Kit V1.1.1
+AI Engineering Kit V1.2.0
 
 执行任务前必须读取：
 
@@ -38,7 +38,7 @@ brownfield-analysis
 ## 二、.agent-env.md
 
 ```text
-AI_ENGINEERING_KIT_VERSION=1.1.1
+AI_ENGINEERING_KIT_VERSION=1.2.0
 AI_ENGINEERING_KIT_HOME=<ai-engineering-kit 仓库绝对路径>
 WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=./openspec
@@ -77,7 +77,7 @@ AGENT_SKILLS_ROOT=./openspec/agent/skills
 ## 四、brownfield-analysis 调用示例
 
 ```text
-按照 AI Engineering Kit V1.1.1 的
+按照 AI Engineering Kit V1.2.0 的
 brownfield-analysis Skill 分析当前需求。
 
 Change ID：
@@ -110,7 +110,7 @@ openspec/changes/withdraw-online-amount-refactor/00-change-analysis.md
 ## 五、design-review 调用示例
 
 ```text
-按照 AI Engineering Kit V1.1.1 的
+按照 AI Engineering Kit V1.2.0 的
 design-review Skill 审查当前 OpenSpec Change。
 
 Change ID：
@@ -146,7 +146,7 @@ BLOCKED
 ## 六、verification 调用示例
 
 ```text
-按照 AI Engineering Kit V1.1.1 的
+按照 AI Engineering Kit V1.2.0 的
 verification Skill 验证当前 Change。
 
 Change ID：
@@ -171,7 +171,7 @@ openspec/changes/withdraw-online-amount-refactor/verification-report.md
 ## 七、change-review 调用示例
 
 ```text
-按照 AI Engineering Kit V1.1.1 的
+按照 AI Engineering Kit V1.2.0 的
 change-review Skill 审查当前 Change。
 
 Change ID：
@@ -198,4 +198,37 @@ Job
 文档同步
 
 不要只做代码风格 Review。
+```
+
+## 八、context-sync 调用示例
+
+```text
+按照 AI Engineering Kit V1.2.0 的
+context-sync Skill 同步当前 Change 中已确认的长期系统事实和工程约束。
+
+Change ID：
+withdraw-online-amount-refactor
+
+读取：
+
+00-change-analysis.md
+proposal
+specs
+design
+tasks
+verification-report.md
+change-review
+actual diff
+
+要求：
+
+1. 只修改 OpenSpec 文档，不修改业务代码。
+2. 长期系统事实进入 openspec/project-context/。
+3. 长期工程约束进入 openspec/rules/。
+4. 单次需求细节保留在 openspec/changes/<change-id>/。
+5. 未确认推断不得进入长期上下文。
+
+输出：
+
+openspec/changes/withdraw-online-amount-refactor/context-sync-report.md
 ```

@@ -1,8 +1,8 @@
 # Workflow 使用说明
 
-## 一、V1.1.1 Workflow 定位
+## 一、V1.2.0 Workflow 定位
 
-V1.1.1 中 Workflow 是：
+V1.2.0 中 Workflow 是：
 
 > 人工执行指南。
 
@@ -35,12 +35,16 @@ V1.1.1 中 Workflow 是：
 批量生成错误代码
 ```
 
-因此 V1.1.1 推荐：
+因此 V1.2.0 推荐：
 
 ```text
 Skill 人工触发
 +
 阶段人工 Review
++
+Gate 治理
++
+Context Sync
 ```
 
 ## 三、Agent 无关

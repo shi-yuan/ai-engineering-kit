@@ -44,6 +44,19 @@ function Copy-TemplateIfMissing([string]$SourceRoot, [string]$TargetRoot) {
     }
 }
 
+function Backup-DirectoryIfExists([string]$SourcePath, [string]$BackupRoot, [string]$Reason) {
+    if (-not (Test-Path $SourcePath)) {
+        return $null
+    }
+
+    $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+    $backupPath = Join-Path $BackupRoot $stamp
+    New-Item -ItemType Directory -Path $BackupRoot -Force | Out-Null
+    Copy-Item -LiteralPath $SourcePath -Destination $backupPath -Recurse -Force
+    Write-Host "Backup ${Reason}: $backupPath"
+    return $backupPath
+}
+
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $KitRoot = (Resolve-Path (Join-Path $ScriptDir "..")).Path
 $ProjectRoot = (Resolve-Path $ProjectRoot).Path
@@ -56,6 +69,9 @@ if ((Test-Path (Join-Path $OpenSpecInput "config.yaml")) -and (Test-Path (Join-P
     $OpenSpecRepoRoot = $OpenSpecInput
     $OpenSpecRoot = (Resolve-Path (Join-Path $OpenSpecRepoRoot "openspec")).Path
 }
+
+$openSpecTemplate = Join-Path $KitRoot "project-template/openspec"
+Copy-TemplateIfMissing $openSpecTemplate $OpenSpecRoot
 
 $ProjectRules = Join-Path $OpenSpecRoot "agent/project-rules.md"
 $LegacyProjectRules = Join-Path $OpenSpecRepoRoot "agent/project-rules.md"
@@ -70,6 +86,7 @@ if (-not (Test-Path $ProjectRules)) {
 
 $relativeOpenSpec = Get-RelativePathCompat $ProjectRoot $OpenSpecRoot
 $relativeSkillsRoot = "$relativeOpenSpec/agent/skills"
+$relativeCustomSkillsRoot = "$relativeOpenSpec/agent/custom-skills"
 $kitVersion = (Get-Content (Join-Path $KitRoot "VERSION") -Raw).Trim()
 
 Write-Host "KitRoot       : $KitRoot"
@@ -79,6 +96,7 @@ Write-Host "OpenSpecInput : $OpenSpecInput"
 Write-Host "OpenSpecRoot  : $relativeOpenSpec"
 Write-Host "ProjectRules  : $ProjectRules"
 Write-Host "SkillsRoot    : $relativeSkillsRoot"
+Write-Host "CustomSkills  : $relativeCustomSkillsRoot"
 
 $baseRules = Get-Content (Join-Path $KitRoot "AGENTS.base.md") -Raw
 $projectRulesContent = Get-Content $ProjectRules -Raw
@@ -103,15 +121,19 @@ Copy-Item (Join-Path $KitRoot "adapters/CLAUDE.md") (Join-Path $ProjectRoot "CLA
 Copy-Item (Join-Path $KitRoot "adapters/CODEBUDDY.md") (Join-Path $ProjectRoot "CODEBUDDY.md") -Force
 Copy-Item (Join-Path $KitRoot "adapters/CODEX.md") (Join-Path $ProjectRoot "CODEX.md") -Force
 
+$customSkillsTarget = Join-Path $OpenSpecRoot "agent/custom-skills"
+if (-not (Test-Path $customSkillsTarget)) {
+    New-Item -ItemType Directory -Path $customSkillsTarget -Force | Out-Null
+}
+
 $skillsTarget = Join-Path $OpenSpecRoot "agent/skills"
+$skillsBackupRoot = Join-Path $OpenSpecRoot "agent/skills.backup"
+Backup-DirectoryIfExists $skillsTarget $skillsBackupRoot "existing public skills before refresh" | Out-Null
 if (Test-Path $skillsTarget) {
     Remove-Item $skillsTarget -Recurse -Force
 }
 New-Item -ItemType Directory -Path $skillsTarget -Force | Out-Null
 Copy-Item (Join-Path $KitRoot "skills/*") $skillsTarget -Recurse -Force
-
-$openSpecTemplate = Join-Path $KitRoot "project-template/openspec"
-Copy-TemplateIfMissing $openSpecTemplate $OpenSpecRoot
 
 $envContent = @(
     "# Agent Environment",
@@ -121,6 +143,7 @@ $envContent = @(
     "WORKSPACE_ROOT=.",
     "OPEN_SPEC_ROOT=$relativeOpenSpec",
     "AGENT_SKILLS_ROOT=$relativeSkillsRoot",
+    "AGENT_CUSTOM_SKILLS_ROOT=$relativeCustomSkillsRoot",
     "",
     "> 本文件由 ai-engineering-kit 生成。",
     "> 不要手工修改；修改源配置后重新执行 setup-agent。",

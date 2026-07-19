@@ -1,4 +1,4 @@
-# Gate 治理实践
+﻿# Gate 治理实践
 
 ## 核心原则
 
@@ -65,3 +65,15 @@ Gate 解决的是历史项目里的典型返工来源：
 - 把 change-review 作为最终 Diff 审查，不只看风格。
 - 把 context-sync 作为 archive 前置条件，避免知识只留在一次性 change。
 - 不要求所有需求都重流程；但凡影响历史状态、数据、接口或异步链路，就不要跳过分析。
+
+## 生产化辅助检查
+
+在人工 Gate 基础上，建议使用以下脚本作为最低机器检查：
+
+```powershell
+scripts/lint-kit.ps1
+scripts/check-change.ps1 -ChangeId <change-id> -NextGate apply
+scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root>
+```
+
+这些脚本不替代人工 Review，但用于提前拦截缺失 artifact、版本漂移、manifest 失效、明显超范围修改和遗漏声明。

@@ -1,4 +1,4 @@
-# 默认变更流程
+﻿# 默认变更流程
 
 ## 需求分类
 
@@ -207,13 +207,19 @@ verification-report.md
 
 ## Gate 7：change-review
 
-人工调用：
+先生成或读取 Diff Summary：
+
+```powershell
+scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root>
+```
+
+然后人工调用：
 
 ```text
 change-review
 ```
 
-基于所有相关仓库实际 Diff 审查。
+基于所有相关仓库实际 Diff 和 `diff-summary.md` 审查。
 
 重点检查：
 
@@ -234,7 +240,13 @@ change-review
 
 ## Gate 8：context-sync
 
-人工调用或手工执行 Context Sync，检查：
+人工调用：
+
+```text
+context-sync
+```
+
+或手工执行 Context Sync，检查：
 
 ```text
 project-context
@@ -247,6 +259,14 @@ agent handoff
 是否需要同步。
 
 长期系统知识必须沉淀。
+
+context-sync 必须区分：
+
+- 可同步长期事实
+- 可同步长期规则
+- 不可同步内容
+- 待确认问题
+- Context Drift
 
 单次需求细节保留在 Change。
 

@@ -1,5 +1,5 @@
 schema: ai-engineering-kit.skills.v1
-kit_version: 1.1.1
+kit_version: 1.2.0
 skills:
   - name: brownfield-analysis
     entry: brownfield-analysis/SKILL.md
@@ -20,4 +20,9 @@ skills:
     entry: change-review/SKILL.md
     description: 基于所有相关仓库实际 Diff 做最终工程审查。
     phase: review
+    modifies_code: false
+  - name: context-sync
+    entry: context-sync/SKILL.md
+    description: 将已确认的长期系统事实和工程约束同步到 project-context 与 rules。
+    phase: context-sync
     modifies_code: false

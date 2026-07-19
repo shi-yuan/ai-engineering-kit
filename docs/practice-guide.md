@@ -2,7 +2,7 @@
 
 本文说明如何把 AI Engineering Kit 接入现有多仓大型项目，以及在日常需求中手动触发各阶段 Skill。
 
-V1.1.1 默认采用：
+V1.2.0 默认采用：
 
 ```text
 人工触发 Skill
@@ -10,6 +10,10 @@ V1.1.1 默认采用：
 人工 Review 阶段产物
 +
 人工决定是否进入下一阶段
++
+Gate 治理
++
+Context Sync
 ```
 
 当前阶段不建议直接升级为自动 Workflow。先用 3 到 5 个中等复杂度历史需求把流程跑顺，再考虑增加 `workflow-state.yaml`、自动准入检查和自动阶段编排。
@@ -109,7 +113,7 @@ openspec/agent/skills/
 其中 `.agent-env.md` 应包含：
 
 ```text
-AI_ENGINEERING_KIT_VERSION=1.1.1
+AI_ENGINEERING_KIT_VERSION=1.2.0
 AI_ENGINEERING_KIT_HOME=<ai-engineering-kit 仓库绝对路径>
 WORKSPACE_ROOT=.
 OPEN_SPEC_ROOT=<相对路径>/openspec
@@ -152,7 +156,8 @@ withdraw-online-amount-refactor
 | 6 | `OpenSpec apply` | 编码型 Agent | 选择在当前代码库里改代码更稳定的 Agent |
 | 7 | `verification` | 验证型 Agent | 实现 Agent 可先跑验证，再由另一个 Agent 复核报告 |
 | 8 | `change-review` | Review Agent | 强烈建议换另一个 Agent 或新会话，基于真实 Diff 审查 |
-| 9 | `OpenSpec archive` | 规格维护 Agent | 负责沉淀长期事实；归档前需要人工确认 |
+| 9 | `context-sync` | 规格维护 Agent | 调用 context-sync Skill 沉淀长期事实；归档前需要人工确认 |
+| 10 | `OpenSpec archive` | 规格维护 Agent | 在 verification、change-review、context-sync 通过后归档 |
 
 如果团队主要使用 Claude Code 和 Codex，可以按以下方式起步：
 
@@ -165,7 +170,8 @@ design-review            Codex 新会话
 OpenSpec apply           Codex 或 Claude Code
 verification             实现 Agent 先做，另一个 Agent 复核
 change-review            另一个 Agent 或新会话
-OpenSpec archive         Claude Code 或 Codex + 人工确认
+context-sync             Claude Code 或 Codex + 人工确认
+OpenSpec archive         Claude Code 或 Codex
 ```
 
 更重要的是角色隔离：
@@ -194,7 +200,7 @@ actual diff
 对 Agent 发起：
 
 ```text
-按照 AI Engineering Kit V1.1.1 的 brownfield-analysis Skill 分析当前需求。
+按照 AI Engineering Kit V1.2.0 的 brownfield-analysis Skill 分析当前需求。
 
 Change ID：
 withdraw-online-amount-refactor
@@ -417,13 +423,31 @@ BLOCKED
 
 `change-review` 的重点是看真实 Diff 是否符合已批准的分析和设计。它不是普通代码风格 Review。
 
-### Step 9：OpenSpec archive
+### Step 9：context-sync
 
-归档前检查：
+对 Agent 发起：
+
+```text
+按照 context-sync Skill 同步当前 Change 中已确认的长期系统事实和工程约束。
+
+Change ID：
+withdraw-online-amount-refactor
+
+要求：
+1. 只修改 OpenSpec 文档，不修改业务代码。
+2. 长期系统事实进入 openspec/project-context/。
+3. 长期工程约束进入 openspec/rules/。
+4. 单次需求细节保留在 openspec/changes/<change-id>/。
+5. 输出 openspec/changes/withdraw-online-amount-refactor/context-sync-report.md。
+```
+
+归档前先执行 Context Sync，检查：
 
 ```text
 openspec/project-context/
 openspec/rules/
+openspec/project-context/integration/
+openspec/project-context/runtime-config-template.md
 ```
 
 如果这次需求沉淀出长期有效的系统事实，更新 `project-context`。
@@ -437,6 +461,17 @@ openspec/changes/<change-id>/
 ```
 
 不要污染长期规则和长期上下文。
+
+如果存在 Context Drift，必须记录冲突并以真实代码分析当前行为；未确认推断不得进入长期上下文。
+
+### Step 10：OpenSpec archive
+
+只有在以下条件满足后才归档：
+
+- Verification 通过，或人工接受剩余检查项并明确 Owner。
+- Change Review 通过。
+- Context Sync 已完成或明确无需同步。
+- 阻塞问题已关闭。
 
 ## 四、openspec/rules 应放什么
 
@@ -452,6 +487,7 @@ openspec/changes/<change-id>/
 
 ```text
 openspec/rules/
+├── change-gates.md
 ├── database.md
 ├── money.md
 ├── api-compatibility.md

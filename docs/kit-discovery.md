@@ -9,7 +9,7 @@ Kit Discovery：如何找到 AI Engineering Kit 根目录
 Skill Resolution：执行某个 Skill 时，从哪里读取 Skill 定义
 ```
 
-它不改变 V1.1.1 的人工触发流程，也不引入自动 Workflow。
+它不改变 V1.2.0 的人工触发流程，也不引入自动 Workflow。
 
 ## 一、推荐配置
 
