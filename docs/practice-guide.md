@@ -492,6 +492,7 @@ openspec/rules/
 ├── money.md
 ├── api-compatibility.md
 ├── dubbo.md
+├── feign-rpc.md
 ├── mq.md
 ├── job.md
 ├── redis-cache.md
@@ -538,6 +539,16 @@ openspec/rules/
 - 修改超时、重试配置必须分析幂等影响。
 - 不得只修改调用方或实现方后结束分析。
 - 接口兼容策略必须在 design 中说明。
+
+### feign-rpc.md
+
+适合记录（Spring Cloud OpenFeign 项目；Dubbo 项目使用 dubbo.md）：
+
+- 修改 Feign Client、RPC DTO、枚举时必须检查全部调用方和 FallbackFactory 降级行为。
+- 超时不等于业务失败；超时后必须按幂等语义查询确认。
+- 不得在未确认幂等的情况下开启重试。
+- 不得绕过统一响应解包工具直接解析原始响应。
+- 跨模块/跨仓库修改必须完整覆盖 Client 定义与实现两端。
 
 ### mq.md
 
@@ -844,6 +855,7 @@ openspec/rules/
 ├── database.md
 ├── money.md
 ├── dubbo.md
+├── feign-rpc.md
 ├── mq.md
 ├── transaction-consistency.md
 └── testing.md

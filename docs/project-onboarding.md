@@ -202,6 +202,7 @@ openspec/rules/database.md
 openspec/rules/money.md
 openspec/rules/api-compatibility.md
 openspec/rules/dubbo.md
+openspec/rules/feign-rpc.md
 openspec/rules/mq.md
 openspec/rules/job.md
 openspec/rules/redis-cache.md
