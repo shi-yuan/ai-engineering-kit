@@ -1,0 +1,72 @@
+﻿# 合并到项目现有 openspec/config.yaml。
+# 不建议直接覆盖已有配置。
+
+context: |
+  当前项目可能是多 Git 仓库历史项目。Workspace 边界以 .agent-env.md 中 WORKSPACE_ROOT 为准。
+
+  执行 change 分析、proposal、design、tasks、apply、verification 或 review 前，必须按顺序读取：
+  1. 项目聚合目录 AGENTS.md。
+  2. .agent-env.md，并确认 AI_ENGINEERING_KIT_HOME、WORKSPACE_ROOT、OPEN_SPEC_ROOT、AGENT_SKILLS_ROOT。
+  3. OPEN_SPEC_ROOT/config.yaml。
+  4. OPEN_SPEC_ROOT/agent/project-rules.md。
+  5. OPEN_SPEC_ROOT/rules/change-gates.md。
+  6. OPEN_SPEC_ROOT/rules/*.md 中与本次变更相关的规则。
+  7. OPEN_SPEC_ROOT/project-context/system-overview.md。
+  8. OPEN_SPEC_ROOT/project-context/architecture.md。
+  9. OPEN_SPEC_ROOT/project-context/module-map.md。
+  10. OPEN_SPEC_ROOT/project-context/data-model.md。
+  11. OPEN_SPEC_ROOT/project-context/impact-analysis-guide.md。
+  12. OPEN_SPEC_ROOT/project-context/change-analysis-template.md。
+  13. OPEN_SPEC_ROOT/project-context/agent-handoff.md。
+  14. OPEN_SPEC_ROOT/project-context/business/ 下相关业务流程和业务不变量。
+  15. OPEN_SPEC_ROOT/project-context/integration/ 下相关 RPC、MQ、Job、外部系统和运行态配置注册表。
+  16. 当前 OPEN_SPEC_ROOT/changes/<change-id>/ 下已有 artifacts；历史功能修改必须读取 00-change-analysis.md。
+  17. Workspace 中相关业务代码、Mapper、配置、RPC、MQ、Job、Controller、Service、Adapter、Repository。
+
+  历史功能修改必须遵守 Gate 流程：
+  Gate 0 Context Loading
+  -> Gate 1 Brownfield Analysis
+  -> Gate 2 Proposal
+  -> Gate 3 Design
+  -> Gate 4 Tasks
+  -> Gate 5 Implementation
+  -> Gate 6 Verification
+  -> Gate 7 Change Review
+  -> Gate 8 Context Sync
+
+  如果 00-change-analysis.md 不存在，原则上不得直接进入历史功能 Proposal、Design 或 Apply。
+  当前实现事实必须通过实际代码、Mapper、配置、DDL 或运行态证据验证。
+  文档、DDL、测试环境数据、接口文档与真实代码冲突时，必须记录冲突并判断 Context Drift。
+  不得假设单个仓库、单个模块、单个类或单个 SQL 包含完整业务语义。
+  实现完成后必须检查 project-context、rules 和 change artifacts 是否需要同步。
+
+rules:
+  proposal:
+    - 历史功能修改必须基于 00-change-analysis.md。
+    - 必须说明涉及模块和 Git 仓库。
+    - 必须说明数据库和数据影响。
+    - 必须说明接口或跨进程调用影响。
+    - 必须说明消息和异步行为影响。
+    - 必须说明定时、重试、补偿或对账影响。
+    - 必须说明事务、并发和幂等影响。
+    - 必须说明风险和兼容性。
+  design:
+    - 历史功能修改必须基于 00-change-analysis.md。
+    - 关键 Design 决策必须能追溯到 Requirement Delta 或当前实现证据。
+    - 不得发明项目中不存在的服务、表、消息、任务或架构层。
+    - 必须说明关键 Business Invariant 如何保持或被明确改变。
+    - 必须说明状态机、幂等键、事务边界、失败补偿、灰度和回滚。
+  tasks:
+    - Task 必须明确修改目标和涉及模块。
+    - Task 不得要求实现 Agent 重新猜测关键业务语义。
+    - 跨仓修改必须明确对应仓库。
+    - 必须包含测试、Verification 和必要的 Context Sync Task。
+  apply:
+    - 严格依据已 Review 的 OpenSpec Artifact 实现。
+    - 不得进行与需求无关的重构。
+    - 代码事实与 Design 冲突时必须停止冲突部分并记录。
+    - 完成后检查 project-context 是否需要更新。
+  archive:
+    - 归档前必须完成 verification、change-review 和 context-sync。
+    - 长期系统知识进入 project-context 或 rules。
+    - 单次需求细节保留在 changes/<change-id>。

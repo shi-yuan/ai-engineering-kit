@@ -1,0 +1,8 @@
+﻿# Project Custom Skills Manifest
+
+schema: ai-engineering-kit.skills.v1
+kit_version: project-custom
+skills: []
+
+# 项目自定义 Skill 放在 openspec/agent/custom-skills/ 下。
+# setup-agent 不会覆盖本目录；公共 Kit Skill 会复制到 openspec/agent/skills/。

@@ -1,0 +1,23 @@
+# Design Review Checklist
+
+-   [ ] 已重新读取原始需求
+-   [ ] 已读取完整 Change Analysis
+-   [ ] 已读取 proposal、specs、design、tasks
+-   [ ] Artifact 之间不存在重大矛盾
+-   [ ] 当前行为与代码证据一致
+-   [ ] 需求 Delta 被准确表达
+-   [ ] 每个关键 Design 决策有事实依据
+-   [ ] 已执行反向影响分析
+-   [ ] 已检查所有确定受影响仓库
+-   [ ] 已检查可能受影响项是否已作 Design 决策
+-   [ ] 已检查数据库和历史数据影响
+-   [ ] 已检查接口和跨进程兼容
+-   [ ] 已检查消息生产端和消费端
+-   [ ] 已检查 Job、重试、补偿、对账
+-   [ ] 已检查事务、锁、幂等和并发
+-   [ ] 已逐条检查业务不变量
+-   [ ] specs 描述了关键可验证行为
+-   [ ] tasks 足以完整落实 design
+-   [ ] tasks 不要求实现 Agent 重新猜关键业务语义
+-   [ ] Verification 策略覆盖主要风险
+-   [ ] Review 结论符合 PASS / PASS_WITH_NON_BLOCKING_COMMENTS / BLOCKED 规则
