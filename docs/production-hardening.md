@@ -37,6 +37,19 @@ Skill 分层：
 | `openspec/agent/skills/` | Kit 公共 Skill 快照 | 是，刷新前备份 |
 | `AI_ENGINEERING_KIT_HOME/skills/` | Kit 源 Skill | 否 |
 
+### 项目自定义 Skill 设计建议（来自 TA 项目实践）
+
+- **审查类 Skill 数量宜精简**：同属"只报告不修改、确认后再改"契约的审查
+  （变更/PR 审查、指定方法问题深挖）优先合并为**单入口双模式 Skill**：
+  开头放"模式判定"表（按输入形态选模式），共享清单（安全红线、金额口径等）只维护一份，
+  模式专属的输出格式分开保留。避免多个重叠 Skill 导致触发歧义和清单重复维护。
+- **不同产物域保持独立**：代码审查与 DDL/SQL 审查、配置审查等对象域不同的，
+  不要硬塞进一个 Skill。
+- **与 Gate 终审的分工**：项目侧审查 Skill（提交前自检，写入 apply-agent profile 强制执行）
+  负责"提交前发现问题"；Kit 的 `change-review`（Gate 7）负责"跨仓最终 Diff 终审"。
+  两者不互相替代。
+- 合并 Skill 时保留原名称（被 profile、module-map 等多处引用），通过描述覆盖新旧触发场景。
+
 ## 3. Gate 最低校验
 
 Kit 提供：
