@@ -43,6 +43,8 @@ Review 必须基于真实 Diff、代码、配置和验证结果，不得把实�
 
 ```powershell
 scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root>
+# 实现已提交到分支时必须带 -BaseRef，否则 committed 变更不会被采集：
+scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root> -BaseRef <base-branch|commit>
 ```
 
 检查：

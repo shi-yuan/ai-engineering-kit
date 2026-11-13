@@ -211,6 +211,7 @@ verification-report.md
 
 ```powershell
 scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root>
+# 实现已提交到分支时必须带 -BaseRef <base-branch|commit>（否则只采集工作区变更）
 ```
 
 然后人工调用：

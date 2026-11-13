@@ -76,6 +76,7 @@ Kit 提供：
 
 ```powershell
 scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root>
+scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root> -BaseRef develop
 ```
 
 输出：
@@ -90,6 +91,11 @@ openspec/changes/<change-id>/diff-summary.md
 - 提取 design/tasks 中声明的文件路径。
 - 标记 diff 中未声明文件，辅助识别超范围修改。
 - 标记声明但未修改文件，辅助识别遗漏实现或陈旧设计。
+
+**已提交实现必须带 `-BaseRef`**：不带该参数时脚本只采集工作区未暂存/已暂存/未跟踪文件，
+不含任何 commit；实现已提交到分支时，必须传 `-BaseRef <branch|commit>`，
+脚本会采集 `<BaseRef>...HEAD` 的 committed diff 与 commit 清单（Changed Files 表 Source=committed），
+否则不得视为 Diff 完整性已通过（教训来源：TA 项目 change-review CR-B4）。
 
 ## 5. Kit 自检
 
@@ -143,3 +149,16 @@ openspec/project-context/metrics/ai-engineering-metrics.md
 - 线上缺陷逃逸率。
 
 这些指标用于改进流程，不用于鼓励跳过 Gate。
+
+## 8. 验证豁免处理
+
+真实项目存在"合法未完成"的验证任务（如本地无数据库/中间件环境、外部联调未排期）。
+禁止为让 `openspec validate --archived` 变绿而伪造任务完成状态。豁免必须按以下协议执行
+（来源：TA 项目首个归档 change 的实践）：
+
+- 未执行任务保持 `- [ ]`，并在任务条目内注明：**未执行原因、风险、Owner、复跑计划/环境**。
+- 必须有需求 Owner 的**书面豁免记录**（可记入 verification-report 的豁免签收节）。
+- 接受 `openspec validate --archived` 因该任务报 `incomplete task` 失败——这是有意为之的诚实信号，
+  不是需要修复的问题。
+- 豁免任务补跑完成后，在归档 change 的 tasks.md 中勾选并附执行证据（输出留存），重新提交。
+- 不得用豁免跳过 P0/P1 问题的修复；豁免只适用于环境受限或外部依赖未就绪的验证项。

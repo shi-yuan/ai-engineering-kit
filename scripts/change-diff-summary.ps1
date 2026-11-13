@@ -6,7 +6,13 @@
 
     [string]$OpenSpecRoot,
 
-    [string]$OutputPath
+    [string]$OutputPath,
+
+    # Base branch or commit (e.g. develop, origin/develop, <commit-sha>).
+    # When provided, committed changes in <BaseRef>...HEAD are included in the
+    # summary (change-gates.md: real diff must cover committed implementation).
+    # When omitted, only working-tree changes (unstaged/staged/untracked) are collected.
+    [string]$BaseRef
 )
 
 $ErrorActionPreference = "Stop"
@@ -62,6 +68,7 @@ Get-ChildItem -LiteralPath $ProjectRoot -Directory | ForEach-Object {
 }
 
 $changed = New-Object System.Collections.Generic.List[object]
+$commitsByRepo = @{}
 foreach ($repo in $repoCandidates) {
     $repoName = Split-Path -Leaf $repo
     $diffLines = Invoke-GitLines @('-C', $repo, 'diff', '--name-status')
@@ -72,14 +79,26 @@ foreach ($repo in $repoCandidates) {
         if (-not $line) { continue }
         $parts = $line -split "\s+", 3
         if ($parts.Count -ge 2) {
-            $changed.Add([pscustomobject]@{ Repo = $repoName; Status = $parts[0]; Path = $parts[1] }) | Out-Null
+            $changed.Add([pscustomobject]@{ Repo = $repoName; Source = 'working-tree'; Status = $parts[0]; Path = $parts[1] }) | Out-Null
         }
     }
 
     foreach ($line in $statusLines) {
         if ($line -match '^\?\?\s+(.+)$') {
-            $changed.Add([pscustomobject]@{ Repo = $repoName; Status = '??'; Path = $Matches[1] }) | Out-Null
+            $changed.Add([pscustomobject]@{ Repo = $repoName; Source = 'working-tree'; Status = '??'; Path = $Matches[1] }) | Out-Null
         }
+    }
+
+    if ($BaseRef) {
+        $committedLines = Invoke-GitLines @('-C', $repo, 'diff', '--name-status', "$BaseRef...HEAD")
+        foreach ($line in @($committedLines)) {
+            if (-not $line) { continue }
+            $parts = $line -split "\s+", 3
+            if ($parts.Count -ge 2) {
+                $changed.Add([pscustomobject]@{ Repo = $repoName; Source = 'committed'; Status = $parts[0]; Path = $parts[1] }) | Out-Null
+            }
+        }
+        $commitsByRepo[$repoName] = @(Invoke-GitLines @('-C', $repo, 'log', '--oneline', "$BaseRef..HEAD") | Where-Object { $_ })
     }
 }
 
@@ -92,7 +111,7 @@ foreach ($match in $pathRegex.Matches($declaredText)) {
     [void]$declaredPaths.Add($match.Value.Replace('\\','/'))
 }
 
-$changedUnique = $changed | Sort-Object Repo, Path, Status -Unique
+$changedUnique = $changed | Sort-Object Repo, Path, Status, Source -Unique
 $unreferenced = @()
 foreach ($item in $changedUnique) {
     $normalized = $item.Path.Replace('\\','/')
@@ -117,6 +136,7 @@ $lines = New-Object System.Collections.Generic.List[string]
 $lines.Add("# Diff Summary: $ChangeId") | Out-Null
 $lines.Add("") | Out-Null
 $lines.Add("Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')") | Out-Null
+if ($BaseRef) { $lines.Add("BaseRef: $BaseRef (committed changes included)") | Out-Null } else { $lines.Add("BaseRef: (not provided - working-tree changes only)") | Out-Null }
 $lines.Add("") | Out-Null
 $lines.Add("## 1. Repositories") | Out-Null
 $lines.Add("") | Out-Null
@@ -125,30 +145,46 @@ foreach ($repo in $repoCandidates) { $lines.Add("- $(Get-RelativePathCompat $Pro
 $lines.Add("") | Out-Null
 $lines.Add("## 2. Changed Files") | Out-Null
 $lines.Add("") | Out-Null
-$lines.Add("| Repo | Status | Path |") | Out-Null
-$lines.Add("|---|---|---|") | Out-Null
-foreach ($item in $changedUnique) { $lines.Add("| $($item.Repo) | $($item.Status) | $($item.Path) |") | Out-Null }
-if ($changedUnique.Count -eq 0) { $lines.Add("| - | - | No changed files detected |") | Out-Null }
+$lines.Add("| Repo | Source | Status | Path |") | Out-Null
+$lines.Add("|---|---|---|---|") | Out-Null
+foreach ($item in $changedUnique) { $lines.Add("| $($item.Repo) | $($item.Source) | $($item.Status) | $($item.Path) |") | Out-Null }
+if ($changedUnique.Count -eq 0) { $lines.Add("| - | - | - | No changed files detected |") | Out-Null }
 $lines.Add("") | Out-Null
-$lines.Add("## 3. Declared Paths In Design/Tasks") | Out-Null
+$lines.Add("## 3. Commits Since BaseRef") | Out-Null
+$lines.Add("") | Out-Null
+if ($BaseRef) {
+    $anyCommit = $false
+    foreach ($repoName in $commitsByRepo.Keys) {
+        foreach ($commit in $commitsByRepo[$repoName]) {
+            $anyCommit = $true
+            $lines.Add("- $repoName : $commit") | Out-Null
+        }
+    }
+    if (-not $anyCommit) { $lines.Add("- No commits found between BaseRef and HEAD in any repository.") | Out-Null }
+} else {
+    $lines.Add("- BaseRef not provided: committed changes are NOT covered by this summary.") | Out-Null
+}
+$lines.Add("") | Out-Null
+$lines.Add("## 4. Declared Paths In Design/Tasks") | Out-Null
 $lines.Add("") | Out-Null
 foreach ($path in ($declaredPaths | Sort-Object)) { $lines.Add("- $path") | Out-Null }
 if ($declaredPaths.Count -eq 0) { $lines.Add("- No explicit file paths detected in proposal/design/tasks.") | Out-Null }
 $lines.Add("") | Out-Null
-$lines.Add("## 4. Potential Scope Expansion") | Out-Null
+$lines.Add("## 5. Potential Scope Expansion") | Out-Null
 $lines.Add("") | Out-Null
-foreach ($item in $unreferenced) { $lines.Add("- $($item.Repo): $($item.Path) ($($item.Status))") | Out-Null }
+foreach ($item in $unreferenced) { $lines.Add("- $($item.Repo): $($item.Path) ($($item.Status), $($item.Source))") | Out-Null }
 if ($unreferenced.Count -eq 0) { $lines.Add("- None detected.") | Out-Null }
 $lines.Add("") | Out-Null
-$lines.Add("## 5. Declared But Not Changed") | Out-Null
+$lines.Add("## 6. Declared But Not Changed") | Out-Null
 $lines.Add("") | Out-Null
 foreach ($path in ($missingDeclared | Sort-Object)) { $lines.Add("- $path") | Out-Null }
 if ($missingDeclared.Count -eq 0) { $lines.Add("- None detected.") | Out-Null }
 $lines.Add("") | Out-Null
-$lines.Add("## 6. Reviewer Notes") | Out-Null
+$lines.Add("## 7. Reviewer Notes") | Out-Null
 $lines.Add("") | Out-Null
 $lines.Add("- Potential scope expansion must be explained or reverted before Gate 7 passes.") | Out-Null
 $lines.Add("- Declared but unchanged paths may indicate omitted implementation or stale design/tasks.") | Out-Null
+$lines.Add("- If implementation is already committed, rerun with -BaseRef <branch|commit> so committed changes are covered (change-gates.md: real diff must cover committed implementation).") | Out-Null
 
 $outputDir = Split-Path -Parent $OutputPath
 if (-not (Test-Path -LiteralPath $outputDir)) { New-Item -ItemType Directory -Force -Path $outputDir | Out-Null }

@@ -289,6 +289,7 @@ scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-ro
 
 - `lint-kit.ps1`：校验 Kit 版本一致性、manifest entry、必需模板和遗留版本号。
 - `check-change.ps1`：检查单个 change 是否满足进入下一 Gate 的最低 artifact 条件。
-- `change-diff-summary.ps1`：生成多仓 Diff Summary，对照 design/tasks 识别潜在超范围修改和遗漏声明。
+- `change-diff-summary.ps1`：生成多仓 Diff Summary，对照 design/tasks 识别潜在超范围修改和遗漏声明；
+  实现已提交时必须带 `-BaseRef <branch|commit>`，否则 committed 变更不会被采集。
 
 项目自定义 Skill 放入 `openspec/agent/custom-skills/`，`setup-agent` 不会覆盖；公共 Skill 刷新前会备份到 `openspec/agent/skills.backup/`。

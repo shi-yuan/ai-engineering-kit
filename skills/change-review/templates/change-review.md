@@ -20,6 +20,7 @@
 
 ```powershell
 scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-root>
+# 实现已提交时必须带 -BaseRef <base-branch|commit>，否则 committed 变更不会被采集
 ```
 
 | 检查项 | 结论 | 证据 / 说明 |
