@@ -201,6 +201,7 @@ openspec/rules/change-gates.md
 openspec/rules/database.md
 openspec/rules/money.md
 openspec/rules/api-compatibility.md
+openspec/rules/code-structure.md
 openspec/rules/dubbo.md
 openspec/rules/feign-rpc.md
 openspec/rules/mq.md

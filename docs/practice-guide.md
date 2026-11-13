@@ -491,6 +491,7 @@ openspec/rules/
 ├── database.md
 ├── money.md
 ├── api-compatibility.md
+├── code-structure.md
 ├── dubbo.md
 ├── feign-rpc.md
 ├── mq.md
@@ -539,6 +540,17 @@ openspec/rules/
 - 修改超时、重试配置必须分析幂等影响。
 - 不得只修改调用方或实现方后结束分析。
 - 接口兼容策略必须在 design 中说明。
+
+### code-structure.md
+
+适合记录：
+
+- Service 实现类只做编排；复杂校验抽 `XxxValidator`、对象转换抽 `XxxConverter` 静态方法。
+- 命名不带动作动词前缀（`XxxValidator` 而非 `XxxSaveValidator`）。
+- 新增校验器/转换器先搜索本项目已有位置从众放置，不新造包。
+- 新增实现类超过约 600 行必须评估拆分，超过约 800 行必须拆分。
+- 分布式锁、缓存、幂等等基础设施优先复用团队公共库，禁止自建锁表或重复造轮子。
+- AI 生成的 Service 实现类视为草稿，提交前必须做结构复查。
 
 ### feign-rpc.md
 
