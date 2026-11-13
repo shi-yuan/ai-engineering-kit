@@ -17,8 +17,19 @@
 - 必要测试
 - 实现过程发现的 design/code 冲突记录
 
+## 提交前自检（强制，git commit 之前）
+
+- 如果项目存在 code-review 类审查 Skill（如 `agent/custom-skills/code-review/`），
+  代码变更提交前必须先执行并输出审查报告，只报告不修改。
+- 如果项目存在 sql-review 类 Skill，涉及 DDL/SQL 的变更必须先执行。
+- 严重问题必须修复后复跑一遍审查复核，形成闭环。
+- 报告与结论记入当前 change 目录。
+- 未经用户确认修复结果，不得提交。
+- 注意：提交前自检不替代 Gate 7 的 `change-review` 终审。
+
 ## 禁止
 
 - 不得擅自扩大范围。
 - 不得无依据重构。
 - 真实代码与 design 冲突时，不得继续扩大实现。
+- 不得跳过提交前自检直接 commit。
