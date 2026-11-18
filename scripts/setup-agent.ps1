@@ -109,7 +109,7 @@ $agentsContent = @(
     "",
     "# 项目专属规则",
     "",
-    "> 以下内容由项目 OpenSpec 的 `agent/project-rules.md` 合并生成。",
+    "> 以下内容由项目 OpenSpec 的 ``agent/project-rules.md`` 合并生成。",
     "> 请勿直接修改聚合目录中的 AGENTS.md；应修改源文件后重新执行 setup-agent。",
     "",
     $projectRulesContent.TrimEnd(),
