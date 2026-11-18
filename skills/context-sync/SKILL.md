@@ -2,7 +2,7 @@
 
 ## 一、目标
 
-在变更完成并通过 verification、change-review 后，将长期有效的系统事实和工程约束同步到项目上下文。
+在变更完成并通过 verification、change-review（及人工 Code Review）后，将长期有效的系统事实和工程约束同步到项目上下文。
 
 本 Skill 对应：
 
@@ -35,6 +35,7 @@ Gate 8 Context Sync
 - tasks
 - verification-report.md
 - change-review.md 或 Review 结论
+- code-review.md 或人工 Code Review 结论
 - 实际 Diff 摘要
 
 ## 三、同步范围

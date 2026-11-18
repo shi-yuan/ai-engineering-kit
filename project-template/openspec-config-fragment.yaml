@@ -6,7 +6,7 @@ context: |
 
   执行 change 分析、proposal、design、tasks、apply、verification 或 review 前，必须按顺序读取：
   1. 项目聚合目录 AGENTS.md。
-  2. .agent-env.md，并确认 AI_ENGINEERING_KIT_HOME、WORKSPACE_ROOT、OPEN_SPEC_ROOT、AGENT_SKILLS_ROOT。
+  2. .agent-env.md，并确认 AI_ENGINEERING_KIT_HOME、WORKSPACE_ROOT、OPEN_SPEC_ROOT、AGENT_SKILLS_ROOT、AGENT_CUSTOM_SKILLS_ROOT。
   3. OPEN_SPEC_ROOT/config.yaml。
   4. OPEN_SPEC_ROOT/agent/project-rules.md。
   5. OPEN_SPEC_ROOT/rules/change-gates.md。
@@ -32,6 +32,7 @@ context: |
   -> Gate 5 Implementation
   -> Gate 6 Verification
   -> Gate 7 Change Review
+  -> 人工 Code Review（code-review / sql-review，项目 custom-skills 同名 Skill 优先）
   -> Gate 8 Context Sync
 
   如果 00-change-analysis.md 不存在，原则上不得直接进入历史功能 Proposal、Design 或 Apply。
@@ -67,6 +68,6 @@ rules:
     - 代码事实与 Design 冲突时必须停止冲突部分并记录。
     - 完成后检查 project-context 是否需要更新。
   archive:
-    - 归档前必须完成 verification、change-review 和 context-sync。
+    - 归档前必须完成 verification、change-review、人工 Code Review 和 context-sync。
     - 长期系统知识进入 project-context 或 rules。
     - 单次需求细节保留在 changes/<change-id>。

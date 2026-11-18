@@ -2,7 +2,7 @@
     [Parameter(Mandatory = $true)]
     [string]$ChangeId,
 
-    [ValidateSet('propose', 'design', 'apply', 'verification', 'change-review', 'context-sync', 'archive')]
+    [ValidateSet('propose', 'design', 'apply', 'verification', 'change-review', 'code-review', 'context-sync', 'archive')]
     [string]$NextGate = 'apply',
 
     [string]$ProjectRoot = (Get-Location).Path,
@@ -99,28 +99,29 @@ $tasks = Join-Path $changeRoot "tasks.md"
 $designReview = Join-Path $changeRoot "design-review.md"
 $verification = Join-Path $changeRoot "verification-report.md"
 $changeReview = Join-Path $changeRoot "change-review.md"
+$codeReview = Join-Path $changeRoot "code-review.md"
 $contextSync = Join-Path $changeRoot "context-sync-report.md"
 $diffSummary = Join-Path $changeRoot "diff-summary.md"
 $specsDir = Join-Path $changeRoot "specs"
 
-if ($NextGate -in @('propose', 'design', 'apply', 'verification', 'change-review', 'context-sync', 'archive')) {
+if ($NextGate -in @('propose', 'design', 'apply', 'verification', 'change-review', 'code-review', 'context-sync', 'archive')) {
     Test-File $analysis "00-change-analysis.md" | Out-Null
     Test-Contains $analysis @("已确认事实", "合理推断", "待确认问题", "Gate") "00-change-analysis.md"
 }
 
-if ($NextGate -in @('design', 'apply', 'verification', 'change-review', 'context-sync', 'archive')) {
+if ($NextGate -in @('design', 'apply', 'verification', 'change-review', 'code-review', 'context-sync', 'archive')) {
     Test-File $proposal "proposal.md" | Out-Null
     if (-not (Test-Path -LiteralPath $specsDir)) { Add-Warning "Missing specs directory: $specsDir" }
 }
 
-if ($NextGate -in @('apply', 'verification', 'change-review', 'context-sync', 'archive')) {
+if ($NextGate -in @('apply', 'verification', 'change-review', 'code-review', 'context-sync', 'archive')) {
     Test-File $design "design.md" | Out-Null
     Test-File $tasks "tasks.md" | Out-Null
     Test-File $designReview "design-review.md" | Out-Null
     Test-Conclusion $designReview "design-review" @('PASS', 'PASS_WITH_NON_BLOCKING_COMMENTS') @('BLOCKED', 'FAIL')
 }
 
-if ($NextGate -in @('change-review', 'context-sync', 'archive')) {
+if ($NextGate -in @('change-review', 'code-review', 'context-sync', 'archive')) {
     Test-File $verification "verification-report.md" | Out-Null
     Test-Conclusion $verification "verification" @('PASS', 'PASS_WITH_MANUAL_CHECKS') @('FAIL', 'BLOCKED')
 }
@@ -129,6 +130,8 @@ if ($NextGate -in @('context-sync', 'archive')) {
     Test-File $changeReview "change-review.md" | Out-Null
     Test-File $diffSummary "diff-summary.md" $false | Out-Null
     Test-Conclusion $changeReview "change-review" @('PASS', 'PASS_WITH_NON_BLOCKING_COMMENTS') @('BLOCKED', 'FAIL')
+    Test-File $codeReview "code-review.md" | Out-Null
+    Test-Conclusion $codeReview "code-review" @('PASS', 'PASS_WITH_NON_BLOCKING_COMMENTS') @('BLOCKED', 'FAIL')
 }
 
 if ($NextGate -eq 'archive') {

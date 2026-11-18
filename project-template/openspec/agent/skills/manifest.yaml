@@ -21,6 +21,16 @@ skills:
     description: 基于所有相关仓库实际 Diff 做最终工程审查。
     phase: review
     modifies_code: false
+  - name: code-review
+    entry: code-review/SKILL.md
+    description: 通用代码审查骨架（人工 Code Review 节点执行主体：需求覆盖矩阵 + Bug/性能清单）。项目 custom-skills 同名 Skill 优先覆盖。
+    phase: review
+    modifies_code: false
+  - name: sql-review
+    entry: sql-review/SKILL.md
+    description: 通用 DDL 审查骨架（人工 Code Review 的 DDL 条件子项：命名/禁用项/迁移风险）。项目 custom-skills 同名 Skill 优先覆盖。
+    phase: review
+    modifies_code: false
   - name: context-sync
     entry: context-sync/SKILL.md
     description: 将已确认的长期系统事实和工程约束同步到 project-context 与 rules。

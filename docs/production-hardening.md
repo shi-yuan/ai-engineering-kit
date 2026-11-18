@@ -46,8 +46,9 @@ Skill 分层：
 - **不同产物域保持独立**：代码审查与 DDL/SQL 审查、配置审查等对象域不同的，
   不要硬塞进一个 Skill。
 - **与 Gate 终审的分工**：项目侧审查 Skill（提交前自检，写入 apply-agent profile 强制执行）
-  负责"提交前发现问题"；Kit 的 `change-review`（Gate 7）负责"跨仓最终 Diff 终审"。
-  两者不互相替代。
+  负责"提交前发现问题"；Kit 的 `change-review`（Gate 7）负责"跨仓最终 Diff 终审"；
+  Gate 7 之后的人工 Code Review（`code-review` / `sql-review`，项目 custom-skills 同名 Skill 优先）
+  负责"代码层质量与需求覆盖的最终把关"。三者不互相替代。
 - 合并 Skill 时保留原名称（被 profile、module-map 等多处引用），通过描述覆盖新旧触发场景。
 
 ## 3. Gate 最低校验
@@ -66,6 +67,7 @@ scripts/check-change.ps1 -ChangeId <change-id> -NextGate apply
 - design-review 结论
 - verification-report
 - change-review
+- code-review（人工 Code Review 记录）
 - context-sync-report
 
 该脚本不是人工 Review 的替代，而是防止明显缺失材料进入下一阶段。

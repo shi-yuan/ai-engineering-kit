@@ -41,7 +41,7 @@ openspec/changes/<change-id>/
 
 ## 操作顺序
 
-1. 从 `00-change-analysis.md`、design、verification、change-review 中提取长期事实。
+1. 从 `00-change-analysis.md`、design、verification、change-review、code-review 中提取长期事实。
 2. 判断事实应进入 `project-context` 还是 `rules`。
 3. 更新集成注册表、模块图、数据模型或业务不变量。
 4. 记录 Context Drift：文档与真实代码冲突时，以代码当前行为为准，同时标注待确认。

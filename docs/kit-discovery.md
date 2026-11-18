@@ -68,30 +68,24 @@ scripts/
 
 ## 三、Skill Resolution 顺序
 
-执行 Skill 时，优先读取项目 Skill 清单：
+执行 Skill 时，按以下优先级解析（与 `scripts/resolve-skill.ps1` 行为一致）：
 
 ```text
-<ProjectRoot>/<OPEN_SPEC_ROOT>/agent/skills/manifest.yaml
+1. 项目自定义 Skill：<OPEN_SPEC_ROOT>/agent/custom-skills/（AGENT_CUSTOM_SKILLS_ROOT）
+2. 项目公共 Skill：<OPEN_SPEC_ROOT>/agent/skills/（AGENT_SKILLS_ROOT，manifest.yaml + 目录）
+3. 项目遗留 Skill：<ProjectRoot>/.agents/skills/（兼容历史项目）
+4. Kit 源 Skill：$AI_ENGINEERING_KIT_HOME/skills/
 ```
 
-根据 `manifest.yaml` 中的 `name` 和 `entry` 定位：
-
-```text
-<ProjectRoot>/<OPEN_SPEC_ROOT>/agent/skills/<skill-name>/SKILL.md
-```
-
-如果项目清单中没有该 Skill，再回退到公共 Kit 清单：
-
-```text
-$AI_ENGINEERING_KIT_HOME/skills/manifest.yaml
-$AI_ENGINEERING_KIT_HOME/skills/<skill-name>/SKILL.md
-```
-
-只有在 `manifest.yaml` 缺失时，才回退到目录约定 `<skill-name>/SKILL.md`。
+每个层级内先读 `manifest.yaml` 的 `name`/`entry`，缺失时回退到目录约定 `<skill-name>/SKILL.md`。
 
 推荐默认使用项目 OpenSpec 内复制的 Skill 清单，因为它与业务项目接入时的 Kit 版本一致，更利于复现。
 
-项目可以在 `openspec/agent/skills/manifest.yaml` 中增加项目私有 Skill，例如：
+**项目自定义 Skill 放在 `openspec/agent/custom-skills/`，优先级最高，且 `setup-agent` 不会覆盖该目录。**
+这是项目级定制的标准位置：项目提供同名 Skill 覆盖 Kit 通用骨架（如 `code-review`、`sql-review`
+的业务红线与模块差异），或提供项目特有的专项检查 Skill（如循环依赖检查）。同名覆盖应谨慎使用，并在 `description` 中说明差异。
+
+项目也可以在 `openspec/agent/skills/manifest.yaml` 中增加项目私有 Skill，例如：
 
 ```yaml
 skills:

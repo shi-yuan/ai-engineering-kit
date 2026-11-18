@@ -69,6 +69,8 @@ Gate 6 verification
   ↓
 Gate 7 change-review
   ↓
+人工 Code Review
+  ↓
 Gate 8 context-sync
   ↓
 OpenSpec archive
@@ -89,8 +91,8 @@ V1.2.0 默认采用：
 | 类型 | 判断标准 | 推荐流程 |
 |---|---|---|
 | A 全新独立功能 | 新模块、新入口、新表，与历史状态和上下游无强耦合 | 可轻量分析，但必须保留 Proposal、Design、Tasks、Verification |
-| B 历史功能增强 | 修改既有接口、状态、表、消息、任务、报表、兼容逻辑 | 必须执行完整 Gate |
-| C 高风险核心变更 | 涉及资金、库存、授信、合同、权限、计费、清结算、履约等 | 完整 Gate + 人工关键事实确认 + 架构/业务 Review + 上线风险清单 |
+| B 历史功能增强 | 修改既有接口、状态、表、消息、任务、报表、兼容逻辑 | 必须执行完整 Gate 及人工 Code Review |
+| C 高风险核心变更 | 涉及资金、库存、授信、合同、权限、计费、清结算、履约等 | 完整 Gate + 人工关键事实确认 + 架构/业务 Review + 人工 Code Review + 上线风险清单 |
 
 本 Kit 的核心不是让 AI 自动接管历史项目，而是让 AI 在证据驱动的 Gate 治理下稳定参与需求交付。
 
@@ -163,7 +165,13 @@ ai-engineering-kit/
 │   │
 │   ├── change-review/
 │   │   └── SKILL.md
-│
+│   │
+│   ├── code-review/
+│   │   └── SKILL.md
+│   │
+│   ├── sql-review/
+│   │   └── SKILL.md
+│   │
 │   └── context-sync/
 │       └── SKILL.md
 │

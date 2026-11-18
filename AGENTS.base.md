@@ -111,6 +111,8 @@ verification
 ↓
 change-review
 ↓
+人工 Code Review（code-review / sql-review）
+↓
 context-sync
 ```
 
@@ -125,8 +127,8 @@ context-sync
 需求分类：
 
 - A 全新独立功能：可以简化 brownfield-analysis，但仍需 Proposal、Design、Tasks、Verification。
-- B 历史功能增强：必须完整执行 Gate 0-8。
-- C 高风险核心变更：在完整 Gate 基础上增加人工关键事实确认、架构 Review、业务 Review 和上线风险清单。
+- B 历史功能增强：必须完整执行 Gate 0-8 及人工 Code Review。
+- C 高风险核心变更：在完整 Gate 基础上增加人工关键事实确认、架构 Review、业务 Review、人工 Code Review 和上线风险清单。
 
 ## 五、强制分析范围
 

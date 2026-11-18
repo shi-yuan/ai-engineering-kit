@@ -4,7 +4,7 @@
 
 | 指标 | 定义 | 记录方式 | 当前值 | 目标 |
 |---|---|---|---|---|
-| 一次通过率 | 首次通过 design-review / change-review 的比例 | 每个 change 记录 PASS/BLOCKED | | |
+| 一次通过率 | 首次通过 design-review / change-review / 人工 Code Review 的比例 | 每个 change 记录 PASS/BLOCKED | | |
 | 返工次数 | 每个 change 从后续 Gate 返回前序 Gate 的次数 | workflow-state 或人工记录 | | |
 
 ## 质量与风险

@@ -189,8 +189,9 @@ OpenSpec config 应声明：
 14. OpenSpec apply。
 15. verification。
 16. change-review。
-17. context-sync。
-18. archive。
+17. 人工 Code Review（code-review / sql-review）。
+18. context-sync。
+19. archive。
 
 V1.2.0 建议人工控制阶段切换，并用 Gate 判断是否允许进入下一阶段。
 

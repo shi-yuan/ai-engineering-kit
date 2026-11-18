@@ -23,9 +23,11 @@
   代码变更提交前必须先执行并输出审查报告，只报告不修改。
 - 如果项目存在 sql-review 类 Skill，涉及 DDL/SQL 的变更必须先执行。
 - 严重问题必须修复后复跑一遍审查复核，形成闭环。
-- 报告与结论记入当前 change 目录。
+- 报告与结论写入 `openspec/changes/<change-id>/self-check-report.md`
+  （无法独立成文时可附在 verification-report 自检节）；
+  Gate 7 之后的人工 Code Review 节点会读取并继承本报告，不重复审查。
 - 未经用户确认修复结果，不得提交。
-- 注意：提交前自检不替代 Gate 7 的 `change-review` 终审。
+- 注意：提交前自检不替代 Gate 7 的 `change-review` 终审，也不替代 Gate 7 之后的人工 Code Review 节点（`code-review` / `sql-review`）。
 
 ## 禁止
 

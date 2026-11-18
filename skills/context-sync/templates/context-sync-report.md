@@ -14,6 +14,7 @@
 | tasks | | | |
 | verification-report.md | | | |
 | change-review | | | |
+| code-review.md（人工 Code Review） | | | |
 | actual diff | | | |
 
 ## 3. 可同步长期事实

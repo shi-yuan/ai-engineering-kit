@@ -5,8 +5,8 @@
 | 类型 | 判断标准 | 推荐流程 |
 |---|---|---|
 | A 全新独立功能 | 与历史接口、历史状态、历史数据、异步链路基本无耦合 | 可简化 brownfield-analysis，但仍需 Proposal、Design、Tasks、Verification |
-| B 历史功能增强 | 修改既有接口、流程、表、状态、消息、任务、兼容逻辑 | 必须完整执行 Gate 0-8 |
-| C 高风险核心变更 | 涉及资金、库存、授信、合同、权限、计费、清结算、履约等 | 完整 Gate + 人工关键事实确认 + 架构/业务 Review + 上线风险清单 |
+| B 历史功能增强 | 修改既有接口、流程、表、状态、消息、任务、兼容逻辑 | 必须完整执行 Gate 0-8 及人工 Code Review |
+| C 高风险核心变更 | 涉及资金、库存、授信、合同、权限、计费、清结算、履约等 | 完整 Gate + 人工关键事实确认 + 架构/业务 Review + 人工 Code Review + 上线风险清单 |
 
 ## Gate 0：Context Loading
 
@@ -239,6 +239,73 @@ change-review
 - 日志
 - 测试
 
+## 人工 Code Review
+
+Gate 7 Change Review 通过后、进入 Gate 8 前，由人工确认是否执行 Code Review。
+
+定位：
+
+```text
+Gate 7 审查设计与业务风险的一致性
+人工 Code Review 审查代码层质量与需求覆盖
+```
+
+Skill 解析（项目覆盖优先）：
+
+```text
+resolve-skill.ps1 -ProjectRoot <workspace-root> -Skill code-review
+resolve-skill.ps1 -ProjectRoot <workspace-root> -Skill sql-review
+```
+
+解析顺序为项目 custom-skills → 项目 skills → Kit 通用骨架。项目未提供同名 Skill 时使用 Kit 骨架版。
+
+执行方式：
+
+```text
+人工调用 code-review
+```
+
+自检结果继承：
+
+```text
+apply-agent 提交前自检已产出审查记录（self-check-report.md 或 verification-report 自检节）
+  ↓ 人工节点执行 code-review 时必须先读取并继承
+  ↓ 已确认 P1/P2 不重复报告
+  ↓ P0 复核修复闭环（复跑验证）
+  ↓ 审查聚焦自检后的增量 Diff；需求覆盖矩阵必须终核
+```
+
+DDL 条件子项：
+
+```text
+diff 涉及 DDL（diff-summary 出现 DDL 脚本，或 proposal 声明数据库影响非空）
+  ↓ 先人工调用 sql-review，报告并入 code-review.md
+不涉及 DDL
+  ↓ 跳过
+```
+
+报告落盘：
+
+```text
+openspec/changes/<change-id>/code-review.md
+```
+
+通过条件：
+
+```text
+P0 全部修复或经人工确认接受
+需求覆盖矩阵无"未覆盖"项，或遗漏项已补充实现
+涉及 DDL 时 sql-review P0 已清零且回滚脚本齐备
+结论为 PASS 或 PASS_WITH_NON_BLOCKING_COMMENTS
+```
+
+豁免规则：
+
+- A 类全新独立功能可经人工豁免，但必须在 `code-review.md` 记录豁免原因和 Owner。
+- B/C 类变更不得豁免。
+
+与 Gate 7 的关系：Gate 7 判定 `BLOCKED` 时（设计与实现存在偏差、需返工），不得进入本节点，先收敛 Gate 5/6/7 循环。
+
 ## Gate 8：context-sync
 
 人工调用：
@@ -279,6 +346,7 @@ context-sync 必须区分：
 
 - Gate 6 Verification 通过或人工接受剩余检查项。
 - Gate 7 Change Review 通过。
+- 人工 Code Review 通过或已记录人工豁免。
 - Gate 8 Context Sync 已完成。
 - 未关闭的阻塞项已解决或明确由人工接受。
 
@@ -292,6 +360,7 @@ context-sync 必须区分：
 | design-review | `PASS` 或 `PASS_WITH_NON_BLOCKING_COMMENTS` | `BLOCKED` |
 | verification | `PASS` 或 `PASS_WITH_MANUAL_CHECKS` 且人工检查项已有 Owner | `FAIL` 或 `BLOCKED` |
 | change-review | `PASS` 或 `PASS_WITH_NON_BLOCKING_COMMENTS` | `BLOCKED` |
+| code-review | `PASS` 或 `PASS_WITH_NON_BLOCKING_COMMENTS`，P0 已清零，需求覆盖矩阵无"未覆盖"项；豁免须记录原因和 Owner | `BLOCKED` |
 | context-sync | 长期事实已同步或明确无需同步，handoff 已记录 | 存在 Context Drift 未处理、长期事实只留在 change |
 
 `PASS_WITH_*` 只能包含非阻塞问题；凡是会影响需求正确性、数据安全、兼容性或上线回滚的问题，必须判定为 `BLOCKED` 或 `FAIL`。

@@ -156,8 +156,9 @@ withdraw-online-amount-refactor
 | 6 | `OpenSpec apply` | 编码型 Agent | 选择在当前代码库里改代码更稳定的 Agent |
 | 7 | `verification` | 验证型 Agent | 实现 Agent 可先跑验证，再由另一个 Agent 复核报告 |
 | 8 | `change-review` | Review Agent | 强烈建议换另一个 Agent 或新会话，基于真实 Diff 审查 |
-| 9 | `context-sync` | 规格维护 Agent | 调用 context-sync Skill 沉淀长期事实；归档前需要人工确认 |
-| 10 | `OpenSpec archive` | 规格维护 Agent | 在 verification、change-review、context-sync 通过后归档 |
+| 9 | 人工 Code Review | 人 + AI 辅助 | 人工调用 `code-review`（涉及 DDL 先 `sql-review`），专业同学确认报告后放行 |
+| 10 | `context-sync` | 规格维护 Agent | 调用 context-sync Skill 沉淀长期事实；归档前需要人工确认 |
+| 11 | `OpenSpec archive` | 规格维护 Agent | 在 verification、change-review、人工 Code Review、context-sync 通过后归档 |
 
 如果团队主要使用 Claude Code 和 Codex，可以按以下方式起步：
 
@@ -170,6 +171,7 @@ design-review            Codex 新会话
 OpenSpec apply           Codex 或 Claude Code
 verification             实现 Agent 先做，另一个 Agent 复核
 change-review            另一个 Agent 或新会话
+人工 Code Review          人 + AI 辅助（code-review / sql-review）
 context-sync             Claude Code 或 Codex + 人工确认
 OpenSpec archive         Claude Code 或 Codex
 ```
@@ -423,7 +425,32 @@ BLOCKED
 
 `change-review` 的重点是看真实 Diff 是否符合已批准的分析和设计。它不是普通代码风格 Review。
 
-### Step 9：context-sync
+### Step 9：人工 Code Review
+
+change-review 通过后，人工调用代码审查：
+
+```text
+按照 code-review Skill 审查当前 Change。
+
+Change ID：
+withdraw-online-amount-refactor
+
+基于真实 Diff 审查，重点：
+需求覆盖矩阵
+代码规范
+Bug（空指针、逻辑错误、状态机、事务边界、并发幂等）
+性能隐患（N+1、慢查询、大数据量）
+
+涉及 DDL 时先执行 sql-review，报告并入同一评审文件。
+
+输出：
+openspec/changes/withdraw-online-amount-refactor/code-review.md
+```
+
+专业同学确认 P0 已清零、需求覆盖矩阵无"未覆盖"项后放行。
+A 类变更可经人工豁免，但必须在 `code-review.md` 记录豁免原因和 Owner。
+
+### Step 10：context-sync
 
 对 Agent 发起：
 
@@ -464,12 +491,13 @@ openspec/changes/<change-id>/
 
 如果存在 Context Drift，必须记录冲突并以真实代码分析当前行为；未确认推断不得进入长期上下文。
 
-### Step 10：OpenSpec archive
+### Step 11：OpenSpec archive
 
 只有在以下条件满足后才归档：
 
 - Verification 通过，或人工接受剩余检查项并明确 Owner。
 - Change Review 通过。
+- 人工 Code Review 通过或已记录人工豁免。
 - Context Sync 已完成或明确无需同步。
 - 阻塞问题已关闭。
 

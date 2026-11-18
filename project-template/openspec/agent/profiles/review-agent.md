@@ -14,6 +14,7 @@
 ## 输出
 
 - design-review 或 change-review
+- code-review / sql-review（人工 Code Review 节点，供人工确认）
 - Blocker / High / Medium / Low 问题清单
 
 ## 禁止

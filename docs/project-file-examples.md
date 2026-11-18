@@ -200,7 +200,30 @@ Job
 不要只做代码风格 Review。
 ```
 
-## 八、context-sync 调用示例
+## 八、code-review 调用示例
+
+```text
+按照 AI Engineering Kit V1.2.0 的
+code-review Skill 审查当前 Change。
+
+Change ID：
+withdraw-online-amount-refactor
+
+基于真实 Diff 审查，重点：
+
+需求覆盖矩阵
+代码规范
+Bug（空指针、逻辑错误、状态机、事务边界、并发幂等）
+性能隐患（N+1、慢查询、大数据量）
+
+涉及 DDL 时先执行 sql-review，报告并入同一评审文件。
+
+输出：
+
+openspec/changes/withdraw-online-amount-refactor/code-review.md
+```
+
+## 九、context-sync 调用示例
 
 ```text
 按照 AI Engineering Kit V1.2.0 的
@@ -218,6 +241,7 @@ design
 tasks
 verification-report.md
 change-review
+code-review.md
 actual diff
 
 要求：

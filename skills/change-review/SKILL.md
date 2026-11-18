@@ -18,6 +18,16 @@ Gate 7 Change Review
 
 Review 必须基于真实 Diff、代码、配置和验证结果，不得把实现 Agent 的自述当作唯一证据。
 
+## 分工边界
+
+本 Skill 通过后进入**人工 Code Review** 节点（`code-review`，涉及 DDL 时先 `sql-review`），由其负责：
+
+- 需求覆盖矩阵（逐条比对需求点与代码，本 Skill 不重复）
+- 代码层质量：分层规范、命名、DTO、测试覆盖
+- Bug 与性能隐患：NPE、逻辑错误、N+1、慢查询等
+
+本 Skill 聚焦 Design 一致性、Diff 完整性、超范围修改和历史兼容，不重复上述内容。
+
 ## 二、输入
 
 读取：
