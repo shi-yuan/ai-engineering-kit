@@ -10,6 +10,12 @@ description: Swagger/OpenAPI 驱动的接口实测骨架。拉取服务 /v3/api-
 > 本 Skill 为通用骨架。**项目 custom-skills 同名 Skill 优先覆盖**（`resolve-skill` 解析顺序：
 > custom-skills → 项目 skills → kit skills）。项目接入时必须先完成"第 0 节 项目适配点"的登记，
 > 否则禁止执行接口实测（一律 BLOCKED）。
+>
+> **协议边界**：本骨架的默认实现形态是 HTTP/OpenAPI（springdoc/swagger）。其他 RPC 形态的项目
+> （Dubbo、gRPC、纯内部 Feign 等）仍用同名 Skill 挂接 Gate 6，但在项目 custom-skills 同名实例中
+> **整体替换实现**（如 Dubbo 泛化调用 `GenericService`、dubbo-admin 元数据比对、消费侧直连验证）；
+> 必须保持不变的是：适配点登记模式、Gate 6 产物约定（报告归档路径、verification-report 引用、
+> 结论枚举 PASS/PASS_WITH_MANUAL_CHECKS/FAIL/BLOCKED）与安全红线（凭证红线、禁止伪造结果）。
 
 ## 0. 项目适配点（项目实例必须登记，缺失即 BLOCKED）
 
