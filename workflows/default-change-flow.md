@@ -190,6 +190,9 @@ tasks
 verification
 ```
 
+需要容器语义的验证项优先走 `api-verification` 接口实测（项目 custom-skills 同名实例登记适配点后启用），
+其产物（api-verification.http、api-verification-report.md、api-docs 快照）并入本 Gate 证据。
+
 输出：
 
 ```text

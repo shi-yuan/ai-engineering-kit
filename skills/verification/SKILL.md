@@ -75,6 +75,8 @@ Test / Verification
 - 静态检查
 - SQL/DDL 验证
 - RPC/MQ/Job 相关验证
+- 需要真实容器语义（鉴权、序列化、实际 SQL、中间件联动、跨服务链路）的验证项，
+  优先走 `api-verification` 接口实测（项目须已提供 custom-skills 同名实例登记适配点）
 
 不得伪造结果。
 

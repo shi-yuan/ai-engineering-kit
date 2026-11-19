@@ -65,6 +65,7 @@ print(os.path.relpath(sys.argv[2], sys.argv[1]).replace("\\", "/"))
 PY
 )"
 REL_SKILLS_ROOT="$REL_OPEN_SPEC/agent/skills"
+REL_CUSTOM_SKILLS_ROOT="$REL_OPEN_SPEC/agent/custom-skills"
 
 echo "KitRoot       : $KIT_ROOT"
 echo "KitVersion    : $KIT_VERSION"

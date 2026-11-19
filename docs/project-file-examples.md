@@ -160,6 +160,7 @@ Build
 Test
 Scenario
 Compatibility
+容器语义验证项（api-verification 接口实测）
 
 不得伪造未执行的验证结果。
 

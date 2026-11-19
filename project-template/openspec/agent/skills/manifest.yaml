@@ -16,6 +16,11 @@ skills:
     description: 验证实际实现是否覆盖需求、符合设计并完成必要工程验证。
     phase: verification
     modifies_code: false
+  - name: api-verification
+    entry: api-verification/SKILL.md
+    description: Swagger/OpenAPI 驱动的接口实测骨架（契约比对 + .http 用例生成执行 + 报告）。项目须在 custom-skills 提供同名实例登记适配点（服务地址/鉴权/统一响应/测试数据），实例优先覆盖。
+    phase: verification
+    modifies_code: false
   - name: change-review
     entry: change-review/SKILL.md
     description: 基于所有相关仓库实际 Diff 做最终工程审查。

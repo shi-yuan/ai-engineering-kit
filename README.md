@@ -163,6 +163,9 @@ ai-engineering-kit/
 │   ├── verification/
 │   │   └── SKILL.md
 │   │
+│   ├── api-verification/
+│   │   └── SKILL.md
+│   │
 │   ├── change-review/
 │   │   └── SKILL.md
 │   │
@@ -175,12 +178,18 @@ ai-engineering-kit/
 │   └── context-sync/
 │       └── SKILL.md
 │
+├── scripts/
+│   └── （setup-agent / lint-kit / check-change 等工程脚本）
+├── project-template/
+│   └── （项目接入通用模板：rules / project-context / agent 等）
+│
 └── docs/
     ├── gate-governance.md
     ├── context-sync.md
     ├── project-onboarding.md
     ├── practice-guide.md
     ├── kit-discovery.md
+    ├── production-hardening.md
     └── project-file-examples.md
 ```
 
@@ -225,11 +234,16 @@ openspec/rules/transaction-consistency.md
 openspec/rules/logging-observability.md
 openspec/rules/testing.md
 openspec/rules/security-permission.md
+openspec/rules/context-health.md
 openspec/project-context/change-analysis-template.md
 openspec/project-context/impact-analysis-guide.md
 openspec/project-context/agent-handoff.md
+openspec/project-context/module-map.md
+openspec/project-context/data-state-registry.md
+openspec/project-context/business/business-invariants.md
 openspec/project-context/integration/integration-registry-template.md
 openspec/project-context/runtime-config-template.md
+openspec/agent/skills/manifest.yaml（及全部公共 Skill）
 ```
 
 已有项目文件不会被覆盖。项目团队应在这些模板基础上沉淀自己的业务上下文、集成注册表和长期规则。

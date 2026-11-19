@@ -187,7 +187,7 @@ OpenSpec config 应声明：
 12. 完成 design-review。
 13. 人工 Review。
 14. OpenSpec apply。
-15. verification。
+15. verification（需要容器语义的验证项先走 api-verification 接口实测）。
 16. change-review。
 17. 人工 Code Review（code-review / sql-review）。
 18. context-sync。

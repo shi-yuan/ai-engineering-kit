@@ -107,7 +107,7 @@ design-review
 ↓
 OpenSpec apply
 ↓
-verification
+verification（需要容器语义的验证项优先走 api-verification 接口实测）
 ↓
 change-review
 ↓
@@ -272,6 +272,8 @@ context-sync
 - 幂等
 - 历史数据兼容
 - 多仓库修改完整性
+- 需要真实容器语义（鉴权、序列化、实际 SQL、中间件联动、跨服务链路）的验证项，
+  优先走 `api-verification` 接口实测（项目提供 custom-skills 同名实例后启用）
 
 不得伪造未执行的：
 

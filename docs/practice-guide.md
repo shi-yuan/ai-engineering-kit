@@ -379,6 +379,7 @@ Test
 重复 Job
 并发
 历史数据兼容
+需要容器语义的验证项：按 api-verification Skill 做本地接口实测（本地起服务连测试环境）
 
 输出：
 openspec/changes/withdraw-online-amount-refactor/verification-report.md

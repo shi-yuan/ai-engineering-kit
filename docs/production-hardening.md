@@ -50,6 +50,11 @@ Skill 分层：
   Gate 7 之后的人工 Code Review（`code-review` / `sql-review`，项目 custom-skills 同名 Skill 优先）
   负责"代码层质量与需求覆盖的最终把关"。三者不互相替代。
 - 合并 Skill 时保留原名称（被 profile、module-map 等多处引用），通过描述覆盖新旧触发场景。
+- **环境耦合类 Skill 走"骨架 + 实例"分层**（来源：TA 项目 `api-verification` 接口实测实践）：
+  Kit 放通用骨架（流程规则、安全红线、输出契约），项目专有事实（服务地址/端口、鉴权方式与凭证
+  本地文件、统一响应判定、测试数据标记、环境前提）抽为骨架第 0 节"项目适配点"清单，
+  由项目 custom-skills 同名实例登记。骨架要求适配点未登记一律 BLOCKED，防止项目照抄骨架
+  后用臆造的地址与凭证执行；`resolve-skill` 的 custom-skills 优先解析保证实例覆盖骨架。
 
 ## 3. Gate 最低校验
 
