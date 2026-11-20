@@ -15,8 +15,8 @@ $ProjectRoot = (Resolve-Path $ProjectRoot).Path
 $errors = New-Object System.Collections.Generic.List[string]
 $warnings = New-Object System.Collections.Generic.List[string]
 
-function Add-Error([string]$Message) { $script:errors.Add($Message) | Out-Null }
-function Add-Warning([string]$Message) { $script:warnings.Add($Message) | Out-Null }
+function Add-Error([string]$Message) { $errors.Add($Message) | Out-Null }
+function Add-Warning([string]$Message) { $warnings.Add($Message) | Out-Null }
 
 function Get-AgentEnvValue([string]$Root, [string]$Name) {
     $envFile = Join-Path $Root ".agent-env.md"

@@ -7,8 +7,8 @@ $KitRoot = (Resolve-Path $KitRoot).Path
 $errors = New-Object System.Collections.Generic.List[string]
 $warnings = New-Object System.Collections.Generic.List[string]
 
-function Add-Error([string]$Message) { $script:errors.Add($Message) | Out-Null }
-function Add-Warning([string]$Message) { $script:warnings.Add($Message) | Out-Null }
+function Add-Error([string]$Message) { $errors.Add($Message) | Out-Null }
+function Add-Warning([string]$Message) { $warnings.Add($Message) | Out-Null }
 function Join-KitPath([string]$Path) { return (Join-Path $KitRoot $Path) }
 
 function Test-RequiredFile([string]$Path) {
