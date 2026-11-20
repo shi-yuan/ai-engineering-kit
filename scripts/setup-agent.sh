@@ -84,9 +84,14 @@ echo "CustomSkills  : $REL_CUSTOM_SKILLS_ROOT"
   cat "$PROJECT_RULES"
 } > "$PROJECT_ROOT/AGENTS.md"
 
-cp "$KIT_ROOT/adapters/CLAUDE.md" "$PROJECT_ROOT/CLAUDE.md"
-cp "$KIT_ROOT/adapters/CODEBUDDY.md" "$PROJECT_ROOT/CODEBUDDY.md"
-cp "$KIT_ROOT/adapters/CODEX.md" "$PROJECT_ROOT/CODEX.md"
+for adapter in CLAUDE.md CODEBUDDY.md CODEX.md; do
+  if [ -f "$PROJECT_ROOT/$adapter" ]; then
+    echo "Adapter exists, skip overwrite (delete it manually to refresh from Kit): $adapter"
+  else
+    cp "$KIT_ROOT/adapters/$adapter" "$PROJECT_ROOT/$adapter"
+    echo "Adapter created: $adapter"
+  fi
+done
 
 mkdir -p "$OPEN_SPEC_ROOT/agent/custom-skills"
 if [ -d "$OPEN_SPEC_ROOT/agent/skills" ]; then

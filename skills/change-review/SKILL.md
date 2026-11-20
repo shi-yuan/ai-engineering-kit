@@ -130,7 +130,7 @@ scripts/change-diff-summary.ps1 -ChangeId <change-id> -ProjectRoot <workspace-ro
 
 ### Engineering
 
-- 日志
+- 日志：关键写操作（保存/修改/删除/状态变更）入口与结果是否符合 `openspec/rules/logging-observability.md`
 - 可观测性
 - 异常处理
 - 测试遗漏
@@ -163,6 +163,12 @@ Low
 - 是否阻塞 archive
 
 ## 五、最终结论
+
+报告落盘：
+
+```text
+openspec/changes/<change-id>/change-review.md
+```
 
 ```text
 PASS

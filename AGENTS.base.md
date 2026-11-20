@@ -225,6 +225,10 @@ context-sync
 
 > 最小安全变更。
 
+同时：
+
+> 关键写操作（保存/修改/删除/状态变更/审批等）必须按 `OPEN_SPEC_ROOT/rules/logging-observability.md` 记录日志。日志属于实现完成的一部分，不是 Review 阶段再补的可选项。
+
 禁止：
 
 - 无依据大规模重构

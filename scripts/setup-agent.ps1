@@ -117,9 +117,16 @@ $agentsContent = @(
 ) -join $newLine
 
 Set-Content -Path (Join-Path $ProjectRoot "AGENTS.md") -Value $agentsContent -Encoding UTF8
-Copy-Item (Join-Path $KitRoot "adapters/CLAUDE.md") (Join-Path $ProjectRoot "CLAUDE.md") -Force
-Copy-Item (Join-Path $KitRoot "adapters/CODEBUDDY.md") (Join-Path $ProjectRoot "CODEBUDDY.md") -Force
-Copy-Item (Join-Path $KitRoot "adapters/CODEX.md") (Join-Path $ProjectRoot "CODEX.md") -Force
+foreach ($adapter in @("CLAUDE.md", "CODEBUDDY.md", "CODEX.md")) {
+    $adapterTarget = Join-Path $ProjectRoot $adapter
+    $adapterSource = Join-Path $KitRoot "adapters/$adapter"
+    if (Test-Path $adapterTarget) {
+        Write-Host "Adapter exists, skip overwrite (delete it manually to refresh from Kit): $adapter"
+    } else {
+        Copy-Item (Join-Path $KitRoot "adapters/$adapter") $adapterTarget
+        Write-Host "Adapter created: $adapter"
+    }
+}
 
 $customSkillsTarget = Join-Path $OpenSpecRoot "agent/custom-skills"
 if (-not (Test-Path $customSkillsTarget)) {

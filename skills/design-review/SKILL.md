@@ -171,6 +171,12 @@ Tasks 必须：
 
 ## 五、输出格式
 
+报告落盘：
+
+```text
+openspec/changes/<change-id>/design-review.md
+```
+
 每个问题必须包含：
 
 - 等级

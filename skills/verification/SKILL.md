@@ -102,6 +102,11 @@ Test / Verification
 - 外部系统异常
 - 补偿收敛
 
+同时检查日志与可观测性（对照 `openspec/rules/logging-observability.md`）：
+
+- 本次变更新增/修改的写操作入口与结果是否有日志（含业务主键/单号）。
+- 核心场景能否通过日志还原操作轨迹；异常场景能否通过日志定位失败阶段。
+
 ## 七、Context Sync Check
 
 检查是否产生需要沉淀的长期知识：
