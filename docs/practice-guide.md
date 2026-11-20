@@ -354,6 +354,7 @@ tasks
 2. 不得做无关重构。
 3. 如果发现真实代码与 design 冲突，停止冲突部分并报告。
 4. 不要自行修改设计语义后继续编码。
+5. 保存/修改/删除/状态变更等关键写操作按 openspec/rules/logging-observability.md 记录日志。
 ```
 
 ### Step 7：verification

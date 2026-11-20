@@ -199,6 +199,7 @@ V1.2.0 建议人工控制阶段切换，并用 Gate 判断是否允许进入下�
 
 ```text
 openspec/rules/change-gates.md
+openspec/rules/context-health.md
 openspec/rules/database.md
 openspec/rules/money.md
 openspec/rules/api-compatibility.md
@@ -215,8 +216,23 @@ openspec/rules/security-permission.md
 openspec/project-context/change-analysis-template.md
 openspec/project-context/impact-analysis-guide.md
 openspec/project-context/agent-handoff.md
+openspec/project-context/module-map.md
+openspec/project-context/data-state-registry.md
+openspec/project-context/business/business-invariants.md
 openspec/project-context/integration/integration-registry-template.md
+openspec/project-context/integration/rpc-registry.md
+openspec/project-context/integration/mq-registry.md
+openspec/project-context/integration/job-registry.md
+openspec/project-context/integration/runtime-config-registry.md
+openspec/project-context/metrics/ai-engineering-metrics.md
 openspec/project-context/runtime-config-template.md
+openspec/project-context/system-overview.md
+openspec/project-context/architecture.md
+openspec/project-context/data-model.md
+openspec/agent/project-rules.md
+openspec/agent/profiles/（5 个 Agent Profile）
+openspec/agent/custom-skills/manifest.yaml
+openspec/agent/skills/（Kit 公共 Skill 快照，刷新前备份到 agent/skills.backup/）
 ```
 
 日常需求执行步骤、rules / project-context / project-rules 编写建议，参见：

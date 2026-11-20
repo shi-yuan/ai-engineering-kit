@@ -96,6 +96,13 @@
 - Task 粒度过大，无法在 Review 中判断完成情况。
 - Task 遗漏数据库、RPC、MQ、Job、回调、补偿、报表或测试中的任一已知影响。
 
+## design-review：实现前审查
+
+Gate 4 通过后、进入 Gate 5 前，人工调用 `design-review` Skill 审查 Proposal、Specs、Design、Tasks：
+
+- 报告落盘 `OPEN_SPEC_ROOT/changes/<change-id>/design-review.md`。
+- 结论为 `PASS` 或 `PASS_WITH_NON_BLOCKING_COMMENTS` 方可进入 Gate 5；`BLOCKED` 时不得实现。
+
 ## Gate 5：Implementation
 
 通过条件：
